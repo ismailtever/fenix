@@ -24,14 +24,14 @@ class TabBarVC: UIViewController {
 //MARK: - Functions
 
     func setupTabBarController() {
-//        let viewController1 = MovieVC()
-//        let viewController2 = FavVC()
-//        let vC = [viewController1, viewController2]
-//
-//        viewController1.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 0)
-//        viewController2.tabBarItem = UITabBarItem(title: "Watch List", image: UIImage(systemName: "bookmark"), tag: 1)
-//
-//        customTabBar.viewControllers = vC
+        let viewController1 = MovieVC()
+        let viewController2 = FavVC()
+        let vC = [viewController1, viewController2]
+
+        viewController1.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 0)
+        viewController2.tabBarItem = UITabBarItem(title: "Watch List", image: UIImage(systemName: "bookmark"), tag: 1)
+
+        customTabBar.viewControllers = vC
         customTabBar.tabBar.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
         customTabBar.tabBar.tintColor = .white
         customTabBar.tabBar.unselectedItemTintColor = .gray

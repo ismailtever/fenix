@@ -16,6 +16,11 @@
 		D9C3D80E2B1B641D00829498 /* Movies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D80D2B1B641D00829498 /* Movies.swift */; };
 		D9C3D8112B1B648900829498 /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D8102B1B648900829498 /* TabBarVC.swift */; };
 		D9C3D8142B1B64B600829498 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D9C3D8132B1B64B600829498 /* SnapKit */; };
+		D9C3D8162B1B653500829498 /* MovieVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D8152B1B653500829498 /* MovieVC.swift */; };
+		D9C3D8192B1B65A100829498 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = D9C3D8182B1B65A100829498 /* Alamofire */; };
+		D9C3D81C2B1B65FA00829498 /* MovieCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D81B2B1B65FA00829498 /* MovieCVCell.swift */; };
+		D9C3D81E2B1B662600829498 /* FavVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D81D2B1B662600829498 /* FavVC.swift */; };
+		D9C3D8202B1B666300829498 /* DetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D81F2B1B666300829498 /* DetailVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +34,10 @@
 		D9C3D8062B1B5ACE00829498 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D9C3D80D2B1B641D00829498 /* Movies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movies.swift; sourceTree = "<group>"; };
 		D9C3D8102B1B648900829498 /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
+		D9C3D8152B1B653500829498 /* MovieVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieVC.swift; sourceTree = "<group>"; };
+		D9C3D81B2B1B65FA00829498 /* MovieCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCVCell.swift; sourceTree = "<group>"; };
+		D9C3D81D2B1B662600829498 /* FavVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavVC.swift; sourceTree = "<group>"; };
+		D9C3D81F2B1B666300829498 /* DetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +46,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D9C3D8142B1B64B600829498 /* SnapKit in Frameworks */,
+				D9C3D8192B1B65A100829498 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +72,7 @@
 		D9C3D7F42B1B5ACB00829498 /* fenix */ = {
 			isa = PBXGroup;
 			children = (
+				D9C3D81A2B1B65BE00829498 /* CustomCell */,
 				D9C3D80F2B1B646700829498 /* ViewControllers */,
 				D9C3D80C2B1B640800829498 /* Models */,
 				D9C3D7F52B1B5ACB00829498 /* AppDelegate.swift */,
@@ -87,8 +98,19 @@
 			isa = PBXGroup;
 			children = (
 				D9C3D8102B1B648900829498 /* TabBarVC.swift */,
+				D9C3D8152B1B653500829498 /* MovieVC.swift */,
+				D9C3D81D2B1B662600829498 /* FavVC.swift */,
+				D9C3D81F2B1B666300829498 /* DetailVC.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		D9C3D81A2B1B65BE00829498 /* CustomCell */ = {
+			isa = PBXGroup;
+			children = (
+				D9C3D81B2B1B65FA00829498 /* MovieCVCell.swift */,
+			);
+			path = CustomCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -109,6 +131,7 @@
 			name = fenix;
 			packageProductDependencies = (
 				D9C3D8132B1B64B600829498 /* SnapKit */,
+				D9C3D8182B1B65A100829498 /* Alamofire */,
 			);
 			productName = fenix;
 			productReference = D9C3D7F22B1B5ACB00829498 /* fenix.app */;
@@ -140,6 +163,7 @@
 			mainGroup = D9C3D7E92B1B5ACB00829498;
 			packageReferences = (
 				D9C3D8122B1B64B600829498 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				D9C3D8172B1B65A100829498 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = D9C3D7F32B1B5ACB00829498 /* Products */;
 			projectDirPath = "";
@@ -170,7 +194,11 @@
 				D9C3D80E2B1B641D00829498 /* Movies.swift in Sources */,
 				D9C3D8002B1B5ACB00829498 /* fenix.xcdatamodeld in Sources */,
 				D9C3D7FA2B1B5ACB00829498 /* ViewController.swift in Sources */,
+				D9C3D8162B1B653500829498 /* MovieVC.swift in Sources */,
 				D9C3D7F62B1B5ACB00829498 /* AppDelegate.swift in Sources */,
+				D9C3D8202B1B666300829498 /* DetailVC.swift in Sources */,
+				D9C3D81E2B1B662600829498 /* FavVC.swift in Sources */,
+				D9C3D81C2B1B65FA00829498 /* MovieCVCell.swift in Sources */,
 				D9C3D8112B1B648900829498 /* TabBarVC.swift in Sources */,
 				D9C3D7F82B1B5ACB00829498 /* SceneDelegate.swift in Sources */,
 			);
@@ -390,6 +418,14 @@
 				minimumVersion = 5.0.1;
 			};
 		};
+		D9C3D8172B1B65A100829498 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.8.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -397,6 +433,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D9C3D8122B1B64B600829498 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		D9C3D8182B1B65A100829498 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D9C3D8172B1B65A100829498 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 
