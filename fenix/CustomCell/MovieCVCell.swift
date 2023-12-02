@@ -13,6 +13,7 @@ class MovieCVCell: UICollectionViewCell {
 //MARK: - Properties
     
     static let identifier = "MovieCVCell"
+    static let shared = MovieCVCell()
     
     private var movieImageView = UIImageView()
     private var movieNameLabel = UILabel()
@@ -45,8 +46,8 @@ class MovieCVCell: UICollectionViewCell {
 
         contentView.addSubview(movieImageView)
         
-        contentView.backgroundColor = .red
-        movieImageView.image = UIImage(named: "spiderman")
+        contentView.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
+//        movieImageView.image = UIImage(named: "spiderman")
         movieImageView.layer.cornerRadius = 15
         movieImageView.layer.masksToBounds = true
         movieImageView.snp.makeConstraints { make in
@@ -143,11 +144,29 @@ class MovieCVCell: UICollectionViewCell {
         }
     }
     func configure(with item: Movie) {
-//        //çekilen veriyi hücre elemanlarına yerleştir
-        movieImageView.image = UIImage(named: "spiderman")
+        //çekilen veriyi hücre elemanlarına yerleştir
+        let baseURL = "https://image.tmdb.org/t/p/w220_and_h330_face/"
+        let posterPath = item.posterPath ?? ""
+
+        let backdropPathString = baseURL + posterPath
+        if let backdropURL = URL(string: backdropPathString) {
+            if let imageData = try? Data(contentsOf: backdropURL) {
+                if let backdropImage = UIImage(data: imageData) {
+                    movieImageView.image = backdropImage
+                } else {
+                    print("Unable to create UIImage")
+                }
+            } else {
+                // Veri alınamadı hatası
+                print("Unable to fetch data")
+            }
+        } else {
+            // Geçersiz URL hatası
+            print("Invalid URL")
+        }
         movieNameLabel.text = item.title
-        movieRating.text = "\(item.popularity ?? 1.1)"
-        movieTypeLabel.text = "action"
+        movieRating.text = "\(item.voteAverage ?? 1.1)"
+        movieTypeLabel.text = item.overview
         movieYearLabel.text = item.releaseDate
         movieTimeLabel.text = "123"
         

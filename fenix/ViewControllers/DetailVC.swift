@@ -11,6 +11,8 @@ class DetailVC: UIViewController {
     
 //MARK: - Properties
     
+    var selectedMovie: Movie?
+
     let detailImageView = UIImageView()
     let posterImageView = UIImageView()
     let posterLabel = UILabel()
@@ -107,7 +109,7 @@ class DetailVC: UIViewController {
         ratingLabel.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
         ratingLabel.numberOfLines = 0
         ratingLabel.textColor = #colorLiteral(red: 1, green: 0.5283361673, blue: 0, alpha: 1)
-        ratingLabel.text = "9.5"
+        ratingLabel.text = "\(selectedMovie?.voteAverage ?? 1.1)"
         ratingLabel.snp.makeConstraints { make in
             make.left.equalTo(ratingImageView.snp.right).offset(4)
             make.bottom.equalTo(ratingImageView.snp.bottom)
@@ -132,7 +134,7 @@ class DetailVC: UIViewController {
         posterLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         posterLabel.numberOfLines = 0
         posterLabel.textColor = .white
-        posterLabel.text = "Spiderman No Way Home"
+        posterLabel.text = selectedMovie?.title
         posterLabel.snp.makeConstraints { make in
             make.left.equalTo(posterImageView.snp.right).offset(29)
             make.right.equalToSuperview().offset(-29)
@@ -151,12 +153,12 @@ class DetailVC: UIViewController {
         
         view.addSubview(calenderLabel)
         calenderLabel.font = UIFont(name: "Montserrat", size: 12)
-        calenderLabel.text = "2021"
+        calenderLabel.text = selectedMovie?.releaseDate
         calenderLabel.textColor = #colorLiteral(red: 0.5730340481, green: 0.5718125701, blue: 0.6154962778, alpha: 1)
         calenderLabel.snp.makeConstraints { make in
             make.left.equalTo(calenderImageView.snp.right).offset(4)
             make.top.equalTo(posterImageView.snp.bottom).offset(24)
-            make.width.equalTo(40)
+            make.width.equalTo(100)
             make.height.equalTo(15)
         }
         
@@ -213,7 +215,7 @@ class DetailVC: UIViewController {
         }
         
         
-        descriptionLabel.text = "From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences."
+        descriptionLabel.text = selectedMovie?.overview
         descriptionLabel.textColor = .white
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = UIFont(name: "Poppins", size: 12)

@@ -100,7 +100,12 @@ extension MovieVC: UICollectionViewDelegateFlowLayout {
 }
 extension MovieVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let selectedMovie = movies[indexPath.item]
+
         let detailVC = DetailVC()
+        detailVC.selectedMovie = selectedMovie
+
         detailVC.modalPresentationStyle = .fullScreen
         present(detailVC, animated: true, completion: nil)
     }
