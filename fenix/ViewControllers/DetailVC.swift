@@ -11,9 +11,9 @@ import CoreData
 class DetailVC: UIViewController {
     
     //MARK: - Properties
-    
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    
+    static let shared = DetailVC()
+    var dataBaseData: [MovieItem] = []
+    var selectedDB: MovieItem?
     var selectedMovie: Movie?
     
     let detailImageView = UIImageView()
@@ -279,6 +279,18 @@ class DetailVC: UIViewController {
             try managedObjectContext?.save()
         } catch {
             print("saving to core data fail\(error.localizedDescription)")
+        }
+    }
+    func fetchFromCoreData() {
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        let managedObjectContext = appDelegate?.persistentContainer.viewContext
+        let entity = NSEntityDescription.entity(forEntityName: "MovieItem", in: managedObjectContext!)
+        let taskItem = NSManagedObject(entity: entity!, insertInto: managedObjectContext)
+        let request = NSFetchRequest<MovieItem>(entityName: "MovieItem")
+        do {
+            let result = try managedObjectContext?.fetch(request)
+        } catch {
+            print("core data fetch failed: \(error.localizedDescription)")
         }
     }
     

@@ -143,8 +143,8 @@
 		D9C3D8232B1B674000829498 /* CORE */ = {
 			isa = PBXGroup;
 			children = (
-				D9C3D8242B1B675800829498 /* NetworkManager.swift */,
 				D9C3D8262B1B677B00829498 /* NetworkUtility.swift */,
+				D9C3D8242B1B675800829498 /* NetworkManager.swift */,
 			);
 			path = CORE;
 			sourceTree = "<group>";

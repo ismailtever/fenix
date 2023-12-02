@@ -6,20 +6,27 @@
 //
 
 import UIKit
+import CoreData
 
 class FavVC: UIViewController {
-
-//MARK: - Properties
-    var collectionView: UICollectionView!
-
-//MARK: Life Cycle
     
+    //MARK: - Properties
+    
+    private var dataBaseData: [MovieItem] = []
+    
+    var collectionView: UICollectionView!
+    
+    //MARK: Life Cycle
+    override func viewWillAppear(_ animated: Bool) {
+        fetchFromCoreData()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchFromCoreData()
         setupUI()
     }
     
-//MARK: - Functions
+    //MARK: - Functions
     
     func setupUI() {
         view.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
@@ -61,9 +68,28 @@ class FavVC: UIViewController {
             make.height.width.equalToSuperview()
         }
     }
+    func fetchFromCoreData() {
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        let managedObjectContext = appDelegate?.persistentContainer.viewContext
+        let entity = NSEntityDescription.entity(forEntityName: "MovieItem", in: managedObjectContext!)
+        guard let taskEntity = entity else {
+            fatalError("MovieItem entity is nil.")
+        }
+        let taskItem = NSManagedObject(entity: taskEntity, insertInto: managedObjectContext)
+        let request = NSFetchRequest<MovieItem>(entityName: "MovieItem")
+        do {
+            if let result = try managedObjectContext?.fetch(request) {
+                dataBaseData = result
+            }
+        } catch {
+            print("Core Data fetch failed: \(error.localizedDescription)")
+        }
+        
+        collectionView?.reloadData()
+    }
     
-//MARK: - OBJC Functions
-
+    //MARK: - OBJC Functions
+    
     @objc func backButtonTapped() {
         
     }
@@ -74,13 +100,13 @@ class FavVC: UIViewController {
 extension FavVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // Return the number of posts
-        return 3
+        return dataBaseData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCVCell.identifier, for: indexPath) as! MovieCVCell
-        
+        let movieDB = dataBaseData[indexPath.item]
+        cell.configureWithCoreData(with: movieDB)
         return cell
     }
     
@@ -90,16 +116,20 @@ extension FavVC: UICollectionViewDelegateFlowLayout {
         return CGSize(width: collectionView.frame.width - 25, height: 120 )
     }
     
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-            return 24 // Dikeyde hücreler arası minimum mesafe (boşluk)
-        }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 24
+    }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }
 extension FavVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let selectedDBMovie = dataBaseData[indexPath.item]
+//
         let detailVC = DetailVC()
+//        detailVC.selectedDB = selectedDBMovie
+
         detailVC.modalPresentationStyle = .fullScreen
         present(detailVC, animated: true, completion: nil)
     }

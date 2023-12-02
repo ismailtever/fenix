@@ -163,7 +163,29 @@ class MovieCVCell: UICollectionViewCell {
         movieTypeLabel.text = item.overview
         movieYearLabel.text = item.releaseDate
         movieTimeLabel.text = "123"
-        
+    }
+    func configureWithCoreData(with item: MovieItem) {
+        let baseURL = "https://image.tmdb.org/t/p/w220_and_h330_face/"
+        let posterPath = item.posterPath ?? ""
+        let backdropPathString = baseURL + posterPath
+        if let backdropURL = URL(string: backdropPathString) {
+            if let imageData = try? Data(contentsOf: backdropURL) {
+                if let backdropImage = UIImage(data: imageData) {
+                    movieImageView.image = backdropImage
+                } else {
+                    print("Unable to create UIImage")
+                }
+            } else {
+                print("Unable to fetch data")
+            }
+        } else {
+            print("Invalid URL")
+        }
+        movieNameLabel.text = item.value(forKey: "title") as? String
+        movieRating.text = "\(item.voteAverage )"
+        movieTypeLabel.text = "Action"
+        movieYearLabel.text = item.value(forKey: "releaseDate") as? String
+//        movieTimeLabel.text = "123"
     }
     
 }
