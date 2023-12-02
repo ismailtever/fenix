@@ -107,29 +107,29 @@ extension MovieVC: UICollectionViewDelegate {
 }
 
 extension MovieVC: UISearchBarDelegate {
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        if let query = searchBar.text, !query.isEmpty {
-//            MovieService.shared.getMovies(query:query) { moviesResponse in
-//                self.movies = moviesResponse.results ?? []
-//            } failure: { error in
-//                print(error)
-//            }
-//        }
-//        searchBar.resignFirstResponder()
-//    }
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if(searchText.count > 2 ){
-//            DispatchQueue.main.async {
-//                MovieService.shared.getMovies(query:searchText) { moviesResponse in
-//                    self.movies = moviesResponse.results ?? []
-//                    self.collectionView.reloadData()
-//                } failure: { error in
-//                    print(error)
-//                }
-//            }
-//        }else{
-//            self.movies = []
-//        }
-//        self.collectionView.reloadData()
-//    }
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let query = searchBar.text, !query.isEmpty {
+            MovieService.shared.getMovies(query:query) { moviesResponse in
+                self.movies = moviesResponse.results ?? []
+            } failure: { error in
+                print(error)
+            }
+        }
+        searchBar.resignFirstResponder()
+    }
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if(searchText.count > 2 ){
+            DispatchQueue.main.async {
+                MovieService.shared.getMovies(query:searchText) { moviesResponse in
+                    self.movies = moviesResponse.results ?? []
+                    self.collectionView.reloadData()
+                } failure: { error in
+                    print(error)
+                }
+            }
+        }else{
+            self.movies = []
+        }
+        self.collectionView.reloadData()
+    }
 }
