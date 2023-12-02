@@ -10,7 +10,7 @@ import SnapKit
 
 class MovieCVCell: UICollectionViewCell {
     
-//MARK: - Properties
+    //MARK: - Properties
     
     static let identifier = "MovieCVCell"
     static let shared = MovieCVCell()
@@ -27,10 +27,10 @@ class MovieCVCell: UICollectionViewCell {
     private var movieTimeLabel = UILabel()
     
     var movies: [Movie] = []
-
-
-//MARK: - Life Cycle
-
+    
+    
+    //MARK: - Life Cycle
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -40,14 +40,13 @@ class MovieCVCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-//MARK: - Functions
-
+    //MARK: - Functions
+    
     func setupUI() {
-
-        contentView.addSubview(movieImageView)
         
+        contentView.addSubview(movieImageView)
         contentView.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
-//        movieImageView.image = UIImage(named: "spiderman")
+        //        movieImageView.image = UIImage(named: "spiderman")
         movieImageView.layer.cornerRadius = 15
         movieImageView.layer.masksToBounds = true
         movieImageView.snp.makeConstraints { make in
@@ -85,7 +84,7 @@ class MovieCVCell: UICollectionViewCell {
             make.top.equalTo(movieNameLabel.snp.bottom).offset(14.5)
             make.left.equalTo(movieRatingImageView.snp.right).offset(4)
         }
-
+        
         contentView.addSubview(movieTypeImageView)
         movieTypeImageView.image = UIImage(systemName: "ticket.fill")
         let tintedImage1 = movieTypeImageView.image?.withTintColor(.white, renderingMode: .alwaysOriginal)
@@ -123,7 +122,6 @@ class MovieCVCell: UICollectionViewCell {
             make.top.equalTo(movieTypeLabel.snp.bottom).offset(5)
             make.left.equalTo(movieYearImageView.snp.right).offset(4)
         }
-        
         contentView.addSubview(movieTimeImageView)
         movieTimeImageView.image = UIImage(named: "time")
         let tintedImage3 = movieTimeImageView.image?.withTintColor(.white, renderingMode: .alwaysOriginal)
@@ -144,10 +142,8 @@ class MovieCVCell: UICollectionViewCell {
         }
     }
     func configure(with item: Movie) {
-        //çekilen veriyi hücre elemanlarına yerleştir
         let baseURL = "https://image.tmdb.org/t/p/w220_and_h330_face/"
         let posterPath = item.posterPath ?? ""
-
         let backdropPathString = baseURL + posterPath
         if let backdropURL = URL(string: backdropPathString) {
             if let imageData = try? Data(contentsOf: backdropURL) {
@@ -157,11 +153,9 @@ class MovieCVCell: UICollectionViewCell {
                     print("Unable to create UIImage")
                 }
             } else {
-                // Veri alınamadı hatası
                 print("Unable to fetch data")
             }
         } else {
-            // Geçersiz URL hatası
             print("Invalid URL")
         }
         movieNameLabel.text = item.title

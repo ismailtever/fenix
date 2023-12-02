@@ -11,19 +11,19 @@ import Alamofire
 
 class MovieVC: UIViewController {
     
-    //MARK: - Properties
+//MARK: - Properties
     
     var collectionView: UICollectionView!
     var searchBar : UISearchBar!
     var movies: [Movie] = []
     
-    //MARK: - Life Cycle
+//MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
     
-    //MARK: - Functions
+//MARK: - Functions
     
     func setupUI() {
         view.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
@@ -36,7 +36,6 @@ class MovieVC: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             make.centerX.equalToSuperview()
         }
-        
         
         searchBar = UISearchBar()
         searchBar.delegate = self
@@ -102,10 +101,9 @@ extension MovieVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let selectedMovie = movies[indexPath.item]
-
+        
         let detailVC = DetailVC()
         detailVC.selectedMovie = selectedMovie
-
         detailVC.modalPresentationStyle = .fullScreen
         present(detailVC, animated: true, completion: nil)
     }

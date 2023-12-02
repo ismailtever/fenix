@@ -10,7 +10,6 @@ import UIKit
 class FavVC: UIViewController {
 
 //MARK: - Properties
-    
     var collectionView: UICollectionView!
 
 //MARK: Life Cycle
@@ -67,9 +66,7 @@ class FavVC: UIViewController {
 
     @objc func backButtonTapped() {
         
-        
     }
-    
 }
 
 // MARK: - Extensions
@@ -79,7 +76,6 @@ extension FavVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // Return the number of posts
         return 3
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

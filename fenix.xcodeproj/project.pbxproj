@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		D9C3D7F62B1B5ACB00829498 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D7F52B1B5ACB00829498 /* AppDelegate.swift */; };
 		D9C3D7F82B1B5ACB00829498 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D7F72B1B5ACB00829498 /* SceneDelegate.swift */; };
-		D9C3D8002B1B5ACB00829498 /* fenix.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D7FE2B1B5ACB00829498 /* fenix.xcdatamodeld */; };
 		D9C3D8022B1B5ACE00829498 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9C3D8012B1B5ACE00829498 /* Assets.xcassets */; };
 		D9C3D8052B1B5ACE00829498 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D9C3D8032B1B5ACE00829498 /* LaunchScreen.storyboard */; };
 		D9C3D80E2B1B641D00829498 /* Movies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D80D2B1B641D00829498 /* Movies.swift */; };
@@ -25,13 +24,13 @@
 		D9C3D8292B1B679C00829498 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D8282B1B679C00829498 /* ErrorMessage.swift */; };
 		D9C3D82B2B1B67BF00829498 /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D82A2B1B67BF00829498 /* MovieService.swift */; };
 		D9C3D82D2B1B67E400829498 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D82C2B1B67E400829498 /* Movie.swift */; };
+		D9C3D8402B1BB1D500829498 /* fenix.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D83E2B1BB1D500829498 /* fenix.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D9C3D7F22B1B5ACB00829498 /* fenix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fenix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9C3D7F52B1B5ACB00829498 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D9C3D7F72B1B5ACB00829498 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		D9C3D7FF2B1B5ACB00829498 /* fenix.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = fenix.xcdatamodel; sourceTree = "<group>"; };
 		D9C3D8012B1B5ACE00829498 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D9C3D8042B1B5ACE00829498 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D9C3D8062B1B5ACE00829498 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -46,6 +45,7 @@
 		D9C3D8282B1B679C00829498 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		D9C3D82A2B1B67BF00829498 /* MovieService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
 		D9C3D82C2B1B67E400829498 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		D9C3D83F2B1BB1D500829498 /* fenix.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = fenix.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +80,7 @@
 		D9C3D7F42B1B5ACB00829498 /* fenix */ = {
 			isa = PBXGroup;
 			children = (
+				D9C3D8452B1BBEE700829498 /* CoreData */,
 				D9C3D8212B1B672A00829498 /* Network */,
 				D9C3D81A2B1B65BE00829498 /* CustomCell */,
 				D9C3D80F2B1B646700829498 /* ViewControllers */,
@@ -89,7 +90,6 @@
 				D9C3D8012B1B5ACE00829498 /* Assets.xcassets */,
 				D9C3D8032B1B5ACE00829498 /* LaunchScreen.storyboard */,
 				D9C3D8062B1B5ACE00829498 /* Info.plist */,
-				D9C3D7FE2B1B5ACB00829498 /* fenix.xcdatamodeld */,
 			);
 			path = fenix;
 			sourceTree = "<group>";
@@ -147,6 +147,14 @@
 				D9C3D8262B1B677B00829498 /* NetworkUtility.swift */,
 			);
 			path = CORE;
+			sourceTree = "<group>";
+		};
+		D9C3D8452B1BBEE700829498 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				D9C3D83E2B1BB1D500829498 /* fenix.xcdatamodeld */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -229,9 +237,9 @@
 			files = (
 				D9C3D82D2B1B67E400829498 /* Movie.swift in Sources */,
 				D9C3D80E2B1B641D00829498 /* Movies.swift in Sources */,
-				D9C3D8002B1B5ACB00829498 /* fenix.xcdatamodeld in Sources */,
 				D9C3D8252B1B675800829498 /* NetworkManager.swift in Sources */,
 				D9C3D8162B1B653500829498 /* MovieVC.swift in Sources */,
+				D9C3D8402B1BB1D500829498 /* fenix.xcdatamodeld in Sources */,
 				D9C3D82B2B1B67BF00829498 /* MovieService.swift in Sources */,
 				D9C3D8292B1B679C00829498 /* ErrorMessage.swift in Sources */,
 				D9C3D7F62B1B5ACB00829498 /* AppDelegate.swift in Sources */,
@@ -482,12 +490,12 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		D9C3D7FE2B1B5ACB00829498 /* fenix.xcdatamodeld */ = {
+		D9C3D83E2B1BB1D500829498 /* fenix.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				D9C3D7FF2B1B5ACB00829498 /* fenix.xcdatamodel */,
+				D9C3D83F2B1BB1D500829498 /* fenix.xcdatamodel */,
 			);
-			currentVersion = D9C3D7FF2B1B5ACB00829498 /* fenix.xcdatamodel */;
+			currentVersion = D9C3D83F2B1BB1D500829498 /* fenix.xcdatamodel */;
 			path = fenix.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

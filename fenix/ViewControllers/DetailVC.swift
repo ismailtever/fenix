@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import CoreData
 
 class DetailVC: UIViewController {
     
-//MARK: - Properties
+    //MARK: - Properties
+    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     var selectedMovie: Movie?
-
+    
     let detailImageView = UIImageView()
     let posterImageView = UIImageView()
     let posterLabel = UILabel()
@@ -24,19 +27,19 @@ class DetailVC: UIViewController {
     let typeImageView = UIImageView()
     let typeLabel = UILabel()
     let descriptionLabel = UILabel()
-
-//MARK: - Life Cycle
+    
+    //MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
     
-//MARK: - Functions
+    //MARK: - Functions
     
     func setupUI() {
         view.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
-
+        
         let backButton = UIButton(type: .system)
         backButton.setTitle("<", for: .normal)
         backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
@@ -76,7 +79,23 @@ class DetailVC: UIViewController {
         detailImageView.backgroundColor = .white
         detailImageView.layer.cornerRadius = 15
         detailImageView.layer.masksToBounds = true
-        detailImageView.image = UIImage(named: "spiderman1")
+        let baseURL = "https://image.tmdb.org/t/p/w500/"
+        let posterPath = selectedMovie?.backdropPath ?? ""
+        let backdropPathString = baseURL + posterPath
+        if let backdropURL = URL(string: backdropPathString) {
+            if let imageData = try? Data(contentsOf: backdropURL) {
+                if let backdropImage = UIImage(data: imageData) {
+                    detailImageView.image = backdropImage
+                } else {
+                    print("Unable to create UIImage")
+                }
+            } else {
+                print("Unable to fetch data")
+            }
+        } else {
+            print("Invalid URL")
+        }
+        //        detailImageView.image = UIImage(named: "spiderman1")
         detailImageView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(30)
@@ -121,7 +140,24 @@ class DetailVC: UIViewController {
         posterImageView.backgroundColor = .orange
         posterImageView.layer.cornerRadius = 15
         posterImageView.layer.masksToBounds = true
-        posterImageView.image = UIImage(named: "spiderman")
+        let baseURL1 = "https://image.tmdb.org/t/p/w220_and_h330_face/"
+        let posterPath1 = selectedMovie?.posterPath ?? ""
+        
+        let backdropPathString1 = baseURL1 + posterPath1
+        if let backdropURL1 = URL(string: backdropPathString1) {
+            if let imageData1 = try? Data(contentsOf: backdropURL1) {
+                if let backdropImage1 = UIImage(data: imageData1) {
+                    posterImageView.image = backdropImage1
+                } else {
+                    print("Unable to create UIImage")
+                }
+            } else {
+                print("Unable to fetch data")
+            }
+        } else {
+            print("Invalid URL")
+        }
+        //        posterImageView.image = UIImage(named: "spiderman")
         posterImageView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(29)
             make.top.equalTo(detailImageView.snp.bottom).inset(60)
@@ -142,7 +178,7 @@ class DetailVC: UIViewController {
             make.width.equalTo(210)
             make.height.equalTo(48)
         }
-
+        
         view.addSubview(calenderImageView)
         calenderImageView.image = UIImage(named: "calender")
         calenderImageView.snp.makeConstraints { make in
@@ -214,7 +250,6 @@ class DetailVC: UIViewController {
             make.top.equalTo(aboutLabel.snp.bottom).offset(4)
         }
         
-        
         descriptionLabel.text = selectedMovie?.overview
         descriptionLabel.textColor = .white
         descriptionLabel.numberOfLines = 0
@@ -225,18 +260,36 @@ class DetailVC: UIViewController {
             make.left.equalToSuperview().offset(29)
             make.top.equalTo(lineView2.snp.bottom).offset(24)
             make.width.equalTo(317)
-            make.height.equalTo(87)
+            make.height.equalTo(200)
+        }
+    }
+    func saveToCoreData() {
+        guard let data = selectedMovie else { return }
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        let managedObjectContext = appDelegate?.persistentContainer.viewContext
+        let entity = NSEntityDescription.entity(forEntityName: "MovieItem", in: managedObjectContext!)
+        let taskItem = NSManagedObject(entity: entity!, insertInto: managedObjectContext)
+        taskItem.setValue(data.title, forKey: "title")
+        taskItem.setValue(data.backdropPath, forKey: "backdropPath")
+        taskItem.setValue(data.overview, forKey: "overview")
+        taskItem.setValue(data.posterPath, forKey: "posterPath")
+        taskItem.setValue(data.voteAverage, forKey: "voteAverage")
+        taskItem.setValue(data.releaseDate, forKey: "releaseDate")
+        do {
+            try managedObjectContext?.save()
+        } catch {
+            print("saving to core data fail\(error.localizedDescription)")
         }
     }
     
-//MARK: - OBJC Functions
+    //MARK: - OBJC Functions
     
     @objc func backButtonTapped() {
         dismiss(animated: true, completion: nil)
     }
     
     @objc func saveButtonTapped() {
-        
+        saveToCoreData()
     }
     
 }
