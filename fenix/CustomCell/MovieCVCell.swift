@@ -12,13 +12,11 @@ import CoreData
 final class MovieCVCell: UICollectionViewCell {
     
     //MARK: - Properties
-    
     var movies: [Movie] = []
     var context: NSManagedObjectContext?
     static let identifier = "MovieCVCell"
     
     //MARK: - UI Elements
-    
     private var movieImageView = UIImageView()
     private var movieNameLabel = UILabel()
     private var movieRatingImageView = UIImageView()
@@ -162,7 +160,7 @@ final class MovieCVCell: UICollectionViewCell {
         movieYearLabel.text = item.releaseDate
         
         guard let posterPath = item.posterPath else { return }
-        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { returns }
+        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { return }
         if let backdropImage = UIImage(data: x) {
             movieImageView.image = backdropImage
         } else {
