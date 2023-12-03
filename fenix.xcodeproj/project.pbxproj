@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D98D0CC52B1C9C8800368884 /* DetailCoreDataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D0CC42B1C9C8800368884 /* DetailCoreDataVC.swift */; };
+		D98D0CC72B1CF03C00368884 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D0CC62B1CF03C00368884 /* CoreDataManager.swift */; };
+		D98D0CCA2B1CFD7E00368884 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D0CC92B1CFD7E00368884 /* Double.swift */; };
 		D9C3D7F62B1B5ACB00829498 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D7F52B1B5ACB00829498 /* AppDelegate.swift */; };
 		D9C3D7F82B1B5ACB00829498 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C3D7F72B1B5ACB00829498 /* SceneDelegate.swift */; };
 		D9C3D8022B1B5ACE00829498 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9C3D8012B1B5ACE00829498 /* Assets.xcassets */; };
@@ -28,6 +31,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D98D0CC42B1C9C8800368884 /* DetailCoreDataVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCoreDataVC.swift; sourceTree = "<group>"; };
+		D98D0CC62B1CF03C00368884 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		D98D0CC92B1CFD7E00368884 /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		D9C3D7F22B1B5ACB00829498 /* fenix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fenix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9C3D7F52B1B5ACB00829498 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D9C3D7F72B1B5ACB00829498 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -61,6 +67,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D98D0CC82B1CFCC300368884 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				D98D0CC92B1CFD7E00368884 /* Double.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		D9C3D7E92B1B5ACB00829498 = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +94,7 @@
 		D9C3D7F42B1B5ACB00829498 /* fenix */ = {
 			isa = PBXGroup;
 			children = (
+				D98D0CC82B1CFCC300368884 /* Extension */,
 				D9C3D8452B1BBEE700829498 /* CoreData */,
 				D9C3D8212B1B672A00829498 /* Network */,
 				D9C3D81A2B1B65BE00829498 /* CustomCell */,
@@ -111,6 +126,7 @@
 				D9C3D8152B1B653500829498 /* MovieVC.swift */,
 				D9C3D81D2B1B662600829498 /* FavVC.swift */,
 				D9C3D81F2B1B666300829498 /* DetailVC.swift */,
+				D98D0CC42B1C9C8800368884 /* DetailCoreDataVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -153,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				D9C3D83E2B1BB1D500829498 /* fenix.xcdatamodeld */,
+				D98D0CC62B1CF03C00368884 /* CoreDataManager.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -235,6 +252,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D98D0CCA2B1CFD7E00368884 /* Double.swift in Sources */,
 				D9C3D82D2B1B67E400829498 /* Movie.swift in Sources */,
 				D9C3D80E2B1B641D00829498 /* Movies.swift in Sources */,
 				D9C3D8252B1B675800829498 /* NetworkManager.swift in Sources */,
@@ -248,6 +266,8 @@
 				D9C3D8272B1B677B00829498 /* NetworkUtility.swift in Sources */,
 				D9C3D81C2B1B65FA00829498 /* MovieCVCell.swift in Sources */,
 				D9C3D8112B1B648900829498 /* TabBarVC.swift in Sources */,
+				D98D0CC52B1C9C8800368884 /* DetailCoreDataVC.swift in Sources */,
+				D98D0CC72B1CF03C00368884 /* CoreDataManager.swift in Sources */,
 				D9C3D7F82B1B5ACB00829498 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

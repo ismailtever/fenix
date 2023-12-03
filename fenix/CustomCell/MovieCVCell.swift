@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 class MovieCVCell: UICollectionViewCell {
     
@@ -27,7 +28,7 @@ class MovieCVCell: UICollectionViewCell {
     private var movieTimeLabel = UILabel()
     
     var movies: [Movie] = []
-    
+    var context: NSManagedObjectContext?
     
     //MARK: - Life Cycle
     
@@ -164,7 +165,12 @@ class MovieCVCell: UICollectionViewCell {
         movieYearLabel.text = item.releaseDate
         movieTimeLabel.text = "123"
     }
-    func configureWithCoreData(with item: MovieItem) {
+    func configureWithCoreData(with item: MovieItems) {
+
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//        context = appDelegate.persistentContainer.viewContext
+//        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "MovieItem")
+//        request.returnsObjectsAsFaults = false
         let baseURL = "https://image.tmdb.org/t/p/w220_and_h330_face/"
         let posterPath = item.posterPath ?? ""
         let backdropPathString = baseURL + posterPath
@@ -181,11 +187,10 @@ class MovieCVCell: UICollectionViewCell {
         } else {
             print("Invalid URL")
         }
-        movieNameLabel.text = item.value(forKey: "title") as? String
-        movieRating.text = "\(item.voteAverage )"
+        movieNameLabel.text = item.title
+        movieRating.text = "\(item.voteAverage)"
         movieTypeLabel.text = "Action"
-        movieYearLabel.text = item.value(forKey: "releaseDate") as? String
-//        movieTimeLabel.text = "123"
+        movieYearLabel.text = item.releaseDate
     }
     
 }

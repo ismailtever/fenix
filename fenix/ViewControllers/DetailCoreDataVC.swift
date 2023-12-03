@@ -1,21 +1,22 @@
 //
-//  DetailVC.swift
+//  DetailCoreDataVC.swift
 //  fenix
 //
-//  Created by Ismail Tever on 2.12.2023.
+//  Created by Ismail Tever on 3.12.2023.
 //
 
 import UIKit
 import CoreData
 
-class DetailVC: UIViewController {
+class DetailCoreDataVC: UIViewController {
     
     //MARK: - Properties
     static let shared = DetailVC()
     var dataBaseData: [MovieItems] = []
     var selectedDB: MovieItems?
-    var selectedMovie: Movie?
+    private let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     
+    //MARK: - UI Elements
     let detailImageView = UIImageView()
     let posterImageView = UIImageView()
     let posterLabel = UILabel()
@@ -29,9 +30,11 @@ class DetailVC: UIViewController {
     let descriptionLabel = UILabel()
     
     //MARK: - Life Cycle
-    
+    override func viewWillAppear(_ animated: Bool) {
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+//        fetchFromCoreData()
         setupUI()
     }
     
@@ -63,12 +66,12 @@ class DetailVC: UIViewController {
             make.centerY.equalTo(backButton)
         }
         
-        let saveButton = UIButton(type: .system)
-        saveButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
-        saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
-        saveButton.tintColor = .white
-        view.addSubview(saveButton)
-        saveButton.snp.makeConstraints { make in
+        let deleteButton = UIButton(type: .system)
+        deleteButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
+        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+        deleteButton.tintColor = .white
+        view.addSubview(deleteButton)
+        deleteButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-24)
             make.centerY.equalTo(backButton)
             make.width.equalTo(18)
@@ -80,7 +83,7 @@ class DetailVC: UIViewController {
         detailImageView.layer.cornerRadius = 15
         detailImageView.layer.masksToBounds = true
         let baseURL = "https://image.tmdb.org/t/p/w500/"
-        let posterPath = selectedMovie?.backdropPath ?? ""
+        let posterPath = selectedDB?.backdropPath ?? ""
         let backdropPathString = baseURL + posterPath
         if let backdropURL = URL(string: backdropPathString) {
             if let imageData = try? Data(contentsOf: backdropURL) {
@@ -95,7 +98,6 @@ class DetailVC: UIViewController {
         } else {
             print("Invalid URL")
         }
-        //        detailImageView.image = UIImage(named: "spiderman1")
         detailImageView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(30)
@@ -128,7 +130,7 @@ class DetailVC: UIViewController {
         ratingLabel.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
         ratingLabel.numberOfLines = 0
         ratingLabel.textColor = #colorLiteral(red: 1, green: 0.5283361673, blue: 0, alpha: 1)
-        ratingLabel.text = "\(selectedMovie?.voteAverage ?? 1.1)"
+        ratingLabel.text = "\(selectedDB?.voteAverage ?? 1.1)"
         ratingLabel.snp.makeConstraints { make in
             make.left.equalTo(ratingImageView.snp.right).offset(4)
             make.bottom.equalTo(ratingImageView.snp.bottom)
@@ -141,7 +143,7 @@ class DetailVC: UIViewController {
         posterImageView.layer.cornerRadius = 15
         posterImageView.layer.masksToBounds = true
         let baseURL1 = "https://image.tmdb.org/t/p/w220_and_h330_face/"
-        let posterPath1 = selectedMovie?.posterPath ?? ""
+        let posterPath1 = selectedDB?.posterPath ?? ""
         let backdropPathString1 = baseURL1 + posterPath1
         if let backdropURL1 = URL(string: backdropPathString1) {
             if let imageData1 = try? Data(contentsOf: backdropURL1) {
@@ -168,7 +170,7 @@ class DetailVC: UIViewController {
         posterLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         posterLabel.numberOfLines = 0
         posterLabel.textColor = .white
-        posterLabel.text = selectedMovie?.title
+        posterLabel.text = selectedDB?.title
         posterLabel.snp.makeConstraints { make in
             make.left.equalTo(posterImageView.snp.right).offset(29)
             make.right.equalToSuperview().offset(-29)
@@ -187,7 +189,7 @@ class DetailVC: UIViewController {
         
         view.addSubview(calenderLabel)
         calenderLabel.font = UIFont(name: "Montserrat", size: 12)
-        calenderLabel.text = selectedMovie?.releaseDate
+        calenderLabel.text = selectedDB?.releaseDate
         calenderLabel.textColor = #colorLiteral(red: 0.5730340481, green: 0.5718125701, blue: 0.6154962778, alpha: 1)
         calenderLabel.snp.makeConstraints { make in
             make.left.equalTo(calenderImageView.snp.right).offset(4)
@@ -248,7 +250,7 @@ class DetailVC: UIViewController {
             make.top.equalTo(aboutLabel.snp.bottom).offset(4)
         }
         
-        descriptionLabel.text = selectedMovie?.overview
+        descriptionLabel.text = selectedDB?.overview
         descriptionLabel.textColor = .white
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = UIFont(name: "Poppins", size: 12)
@@ -260,31 +262,41 @@ class DetailVC: UIViewController {
             make.width.equalTo(317)
         }
     }
-    func saveToCoreData() {
-        guard let data = selectedMovie else { return }
+    
+//    func fetchFromCoreData() {
+//           // AppDelegate üzerinden managedObjectContext'a erişim sağla
+//           guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+//               return
+//           }
+//
+//           let managedObjectContext = appDelegate.persistentContainer.viewContext
+//
+//           // Core Data'dan veri çekme işlemi için bir fetch request oluştur
+//           let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MovieItems")
+//
+//           do {
+//               // Veriyi çek
+//               let result = try managedObjectContext.fetch(fetchRequest)
+//
+//               // Eğer veri varsa, ilk elemanın belirli bir özelliğini (örneğin, "text") al
+//               if let firstObject = result.first as? NSManagedObject,
+//                  let labelText = firstObject.value(forKey: "title") as? String {
+//                   // UILabel'a çekilen veriyi ata
+//                   posterLabel.text = labelText
+//               }
+//           } catch {
+//               print("fetch data failed: \(error.localizedDescription)")
+//           }
+//       }
+    func deleteObjectFromCoreData(object: NSManagedObject, context: NSManagedObjectContext) {
+        context.delete(object)
         
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        let managedObjectContext = appDelegate?.persistentContainer.viewContext
-        
-        if let entity = NSEntityDescription.entity(forEntityName: "MovieItems", in: managedObjectContext!),
-           let taskItem = NSManagedObject(entity: entity, insertInto: managedObjectContext!) as? MovieItems {
-            
-            taskItem.title = data.title
-            taskItem.backdropPath = data.backdropPath
-            taskItem.overview = data.overview
-            taskItem.posterPath = data.posterPath
-            taskItem.voteAverage = data.voteAverage ?? 1.1
-            taskItem.releaseDate = data.releaseDate
-            
-            do {
-                try managedObjectContext?.save()
-                print("saved to core data")
-            } catch {
-                print("Saving to Core Data failed: \(error.localizedDescription)")
-            }
+        do {
+            try context.save()
+        } catch {
+            print("Deleting error: \(error)")
         }
     }
-    
     
     //MARK: - OBJC Functions
     
@@ -292,10 +304,11 @@ class DetailVC: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func saveButtonTapped() {
-        saveToCoreData()
-        dismiss(animated: true, completion: nil)
-
+    @objc func deleteButtonTapped() {
+        if let selectedDB = selectedDB {
+            deleteObjectFromCoreData(object: selectedDB, context: managedObjectContext!)
+            dismiss(animated: true, completion: nil)
+        }
     }
     
 }

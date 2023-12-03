@@ -12,17 +12,19 @@ class FavVC: UIViewController {
     
     //MARK: - Properties
     
-    private var dataBaseData: [MovieItem] = []
+    var dataBaseData: [MovieItems] = []
     
     var collectionView: UICollectionView!
     
     //MARK: Life Cycle
     override func viewWillAppear(_ animated: Bool) {
         fetchFromCoreData()
+        print("Data Count: \(dataBaseData.count)")
+
+
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchFromCoreData()
         setupUI()
     }
     
@@ -65,27 +67,31 @@ class FavVC: UIViewController {
         collectionView.register(MovieCVCell.self, forCellWithReuseIdentifier: MovieCVCell.identifier)
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(44)
-            make.height.width.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalTo(600)
+
+        }
+    }
+    func deleteAllCoreData(context: NSManagedObjectContext) {
+        do {
+            let fetchRequest = NSFetchRequest<MovieItems>(entityName: "MovieItems")
+            // Fetch Data
+            let objects = try context.fetch(fetchRequest)
+            // Delete Data
+            _ = objects.map({context.delete($0)})
+            // Save Data
+            try context.save()
+        } catch {
+            print("Deleting error: \(error)")
         }
     }
     func fetchFromCoreData() {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         let managedObjectContext = appDelegate?.persistentContainer.viewContext
-        let entity = NSEntityDescription.entity(forEntityName: "MovieItem", in: managedObjectContext!)
-        guard let taskEntity = entity else {
-            fatalError("MovieItem entity is nil.")
-        }
-        let taskItem = NSManagedObject(entity: taskEntity, insertInto: managedObjectContext)
-        let request = NSFetchRequest<MovieItem>(entityName: "MovieItem")
-        do {
-            if let result = try managedObjectContext?.fetch(request) {
-                dataBaseData = result
-            }
-        } catch {
-            print("Core Data fetch failed: \(error.localizedDescription)")
-        }
+        let fetchRequest = NSFetchRequest<MovieItems>(entityName: "MovieItems")
         
-        collectionView?.reloadData()
+        dataBaseData = try! managedObjectContext!.fetch(fetchRequest)
+        collectionView.reloadData()
     }
     
     //MARK: - OBJC Functions
@@ -101,11 +107,12 @@ extension FavVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataBaseData.count
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCVCell.identifier, for: indexPath) as! MovieCVCell
-        let movieDB = dataBaseData[indexPath.item]
+        let movieDB = dataBaseData[indexPath.row]
         cell.configureWithCoreData(with: movieDB)
         return cell
     }
@@ -125,10 +132,9 @@ extension FavVC: UICollectionViewDelegateFlowLayout {
 }
 extension FavVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let selectedDBMovie = dataBaseData[indexPath.item]
-//
-        let detailVC = DetailVC()
-//        detailVC.selectedDB = selectedDBMovie
+        let selectedDBMovie = dataBaseData[indexPath.row]
+        let detailVC = DetailCoreDataVC()
+        detailVC.selectedDB = selectedDBMovie
 
         detailVC.modalPresentationStyle = .fullScreen
         present(detailVC, animated: true, completion: nil)

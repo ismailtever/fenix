@@ -59,7 +59,8 @@ class MovieVC: UIViewController {
         collectionView.register(MovieCVCell.self, forCellWithReuseIdentifier: MovieCVCell.identifier)
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(searchBar.snp.bottom).offset(10)
-            make.height.width.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalTo(600)
         }
     }
 }
@@ -100,7 +101,7 @@ extension MovieVC: UICollectionViewDelegateFlowLayout {
 extension MovieVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let selectedMovie = movies[indexPath.item]
+        let selectedMovie = movies[indexPath.row]
         
         let detailVC = DetailVC()
         detailVC.selectedMovie = selectedMovie

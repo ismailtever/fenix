@@ -7,17 +7,19 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 class TabBarVC: UIViewController {
 
 //MARK: - Properties
-    
+    private let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     let customTabBar = UITabBarController()
     
 //MARK: - Life Cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+//        CoreDataManager.shared.deleteAllCoreDataObjects(context: managedObjectContext!)
         setupTabBarController()
     }
     
