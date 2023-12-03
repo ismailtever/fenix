@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class DetailCoreDataVC: UIViewController {
+final class DetailCoreDataVC: UIViewController {
     
     //MARK: - Properties
     static let shared = DetailVC()
@@ -17,24 +17,23 @@ class DetailCoreDataVC: UIViewController {
     private let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     
     //MARK: - UI Elements
-    let detailImageView = UIImageView()
-    let posterImageView = UIImageView()
-    let posterLabel = UILabel()
-    let seenView = UIView()
-    let ratingImageView = UIImageView()
-    let ratingLabel = UILabel()
-    let calenderImageView = UIImageView()
-    let calenderLabel = UILabel()
-    let typeImageView = UIImageView()
-    let typeLabel = UILabel()
-    let descriptionLabel = UILabel()
+    private let detailImageView = UIImageView()
+    private let posterImageView = UIImageView()
+    private let posterLabel = UILabel()
+    private let seenView = UIView()
+    private let ratingImageView = UIImageView()
+    private let ratingLabel = UILabel()
+    private let calenderImageView = UIImageView()
+    private let calenderLabel = UILabel()
+    private let typeImageView = UIImageView()
+    private let typeLabel = UILabel()
+    private let descriptionLabel = UILabel()
     
     //MARK: - Life Cycle
     override func viewWillAppear(_ animated: Bool) {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-//        fetchFromCoreData()
         setupUI()
     }
     
@@ -82,21 +81,12 @@ class DetailCoreDataVC: UIViewController {
         detailImageView.backgroundColor = .white
         detailImageView.layer.cornerRadius = 15
         detailImageView.layer.masksToBounds = true
-        let baseURL = "https://image.tmdb.org/t/p/w500/"
-        let posterPath = selectedDB?.backdropPath ?? ""
-        let backdropPathString = baseURL + posterPath
-        if let backdropURL = URL(string: backdropPathString) {
-            if let imageData = try? Data(contentsOf: backdropURL) {
-                if let backdropImage = UIImage(data: imageData) {
-                    detailImageView.image = backdropImage
-                } else {
-                    print("Unable to create UIImage")
-                }
-            } else {
-                print("Unable to fetch data")
-            }
+        guard let backdropPath = selectedDB?.backdropPath else { return }
+        guard let x = MovieService.shared.getMoviePosterImage(imgURL: backdropPath) else { return }
+        if let backdropImage = UIImage(data: x) {
+            detailImageView.image = backdropImage
         } else {
-            print("Invalid URL")
+            print("Unable to create UIImage")
         }
         detailImageView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
@@ -142,22 +132,13 @@ class DetailCoreDataVC: UIViewController {
         posterImageView.backgroundColor = .orange
         posterImageView.layer.cornerRadius = 15
         posterImageView.layer.masksToBounds = true
-        let baseURL1 = "https://image.tmdb.org/t/p/w220_and_h330_face/"
-        let posterPath1 = selectedDB?.posterPath ?? ""
-        let backdropPathString1 = baseURL1 + posterPath1
-        if let backdropURL1 = URL(string: backdropPathString1) {
-            if let imageData1 = try? Data(contentsOf: backdropURL1) {
-                if let backdropImage1 = UIImage(data: imageData1) {
-                    posterImageView.image = backdropImage1
+        guard let posterPath = selectedDB?.posterPath else { return }
+        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { return }
+                if let posterImage = UIImage(data: x) {
+                    posterImageView.image = posterImage
                 } else {
                     print("Unable to create UIImage")
                 }
-            } else {
-                print("Unable to fetch data")
-            }
-        } else {
-            print("Invalid URL")
-        }
         posterImageView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(29)
             make.top.equalTo(detailImageView.snp.bottom).inset(60)
@@ -262,35 +243,9 @@ class DetailCoreDataVC: UIViewController {
             make.width.equalTo(317)
         }
     }
-    
-//    func fetchFromCoreData() {
-//           // AppDelegate üzerinden managedObjectContext'a erişim sağla
-//           guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-//               return
-//           }
-//
-//           let managedObjectContext = appDelegate.persistentContainer.viewContext
-//
-//           // Core Data'dan veri çekme işlemi için bir fetch request oluştur
-//           let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MovieItems")
-//
-//           do {
-//               // Veriyi çek
-//               let result = try managedObjectContext.fetch(fetchRequest)
-//
-//               // Eğer veri varsa, ilk elemanın belirli bir özelliğini (örneğin, "text") al
-//               if let firstObject = result.first as? NSManagedObject,
-//                  let labelText = firstObject.value(forKey: "title") as? String {
-//                   // UILabel'a çekilen veriyi ata
-//                   posterLabel.text = labelText
-//               }
-//           } catch {
-//               print("fetch data failed: \(error.localizedDescription)")
-//           }
-//       }
+   
     func deleteObjectFromCoreData(object: NSManagedObject, context: NSManagedObjectContext) {
         context.delete(object)
-        
         do {
             try context.save()
         } catch {
@@ -310,5 +265,4 @@ class DetailCoreDataVC: UIViewController {
             dismiss(animated: true, completion: nil)
         }
     }
-    
 }

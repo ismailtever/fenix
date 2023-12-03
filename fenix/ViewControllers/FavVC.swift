@@ -8,20 +8,18 @@
 import UIKit
 import CoreData
 
-class FavVC: UIViewController {
+final class FavVC: UIViewController {
     
     //MARK: - Properties
     
-    var dataBaseData: [MovieItems] = []
+    private var dataBaseData: [MovieItems] = []
     
-    var collectionView: UICollectionView!
+    private var collectionView: UICollectionView!
     
     //MARK: Life Cycle
     override func viewWillAppear(_ animated: Bool) {
         fetchFromCoreData()
         print("Data Count: \(dataBaseData.count)")
-
-
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +28,7 @@ class FavVC: UIViewController {
     
     //MARK: - Functions
     
-    func setupUI() {
+    private func setupUI() {
         view.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
         
         let backButton = UIButton(type: .system)
@@ -72,24 +70,11 @@ class FavVC: UIViewController {
 
         }
     }
-    func deleteAllCoreData(context: NSManagedObjectContext) {
-        do {
-            let fetchRequest = NSFetchRequest<MovieItems>(entityName: "MovieItems")
-            // Fetch Data
-            let objects = try context.fetch(fetchRequest)
-            // Delete Data
-            _ = objects.map({context.delete($0)})
-            // Save Data
-            try context.save()
-        } catch {
-            print("Deleting error: \(error)")
-        }
-    }
+    
     func fetchFromCoreData() {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         let managedObjectContext = appDelegate?.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<MovieItems>(entityName: "MovieItems")
-        
         dataBaseData = try! managedObjectContext!.fetch(fetchRequest)
         collectionView.reloadData()
     }

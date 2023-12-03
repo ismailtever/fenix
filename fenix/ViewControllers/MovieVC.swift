@@ -9,23 +9,23 @@ import UIKit
 import SnapKit
 import Alamofire
 
-class MovieVC: UIViewController {
+final class MovieVC: UIViewController {
     
-//MARK: - Properties
+    //MARK: - Properties
     
     var collectionView: UICollectionView!
     var searchBar : UISearchBar!
     var movies: [Movie] = []
     
-//MARK: - Life Cycle
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
     
-//MARK: - Functions
+    //MARK: - Functions
     
-    func setupUI() {
+    private func setupUI() {
         view.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
         let titleLabel = UILabel()
         titleLabel.text = "Movie List"
@@ -92,7 +92,7 @@ extension MovieVC: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 24 // Dikeyde hücreler arası minimum mesafe (boşluk)
+        return 24
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
@@ -122,7 +122,8 @@ extension MovieVC: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if(searchText.count > 2 ){
+        let startSearchIndex = 2
+        if(searchText.count > startSearchIndex){
             DispatchQueue.main.async {
                 MovieService.shared.getMovies(query:searchText) { moviesResponse in
                     self.movies = moviesResponse.results ?? []

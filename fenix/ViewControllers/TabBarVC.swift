@@ -7,25 +7,24 @@
 
 import UIKit
 import SnapKit
-import CoreData
 
-class TabBarVC: UIViewController {
+final class TabBarVC: UIViewController {
 
 //MARK: - Properties
-    private let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
-    let customTabBar = UITabBarController()
+
+    private let customTabBar = UITabBarController()
     
 //MARK: - Life Cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        CoreDataManager.shared.deleteAllCoreDataObjects(context: managedObjectContext!)
+
         setupTabBarController()
     }
     
 //MARK: - Functions
 
-    func setupTabBarController() {
+    private func setupTabBarController() {
         let viewController1 = MovieVC()
         let viewController2 = FavVC()
         let vC = [viewController1, viewController2]
@@ -49,7 +48,7 @@ class TabBarVC: UIViewController {
         customTabBar.view.addSubview(lineView)
         
         lineView.snp.makeConstraints { make in
-            make.height.equalTo(1) // Çizgi yüksekliği
+            make.height.equalTo(1)
             make.leading.trailing.equalTo(customTabBar.tabBar)
             make.bottom.equalTo(customTabBar.tabBar.snp.top)
         }

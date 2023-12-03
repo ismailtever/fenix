@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class DetailVC: UIViewController {
+final class DetailVC: UIViewController {
     
     //MARK: - Properties
     static let shared = DetailVC()
@@ -16,17 +16,18 @@ class DetailVC: UIViewController {
     var selectedDB: MovieItems?
     var selectedMovie: Movie?
     
-    let detailImageView = UIImageView()
-    let posterImageView = UIImageView()
-    let posterLabel = UILabel()
-    let seenView = UIView()
-    let ratingImageView = UIImageView()
-    let ratingLabel = UILabel()
-    let calenderImageView = UIImageView()
-    let calenderLabel = UILabel()
-    let typeImageView = UIImageView()
-    let typeLabel = UILabel()
-    let descriptionLabel = UILabel()
+    //MARK: - UI Elements
+    private let detailImageView = UIImageView()
+    private let posterImageView = UIImageView()
+    private let posterLabel = UILabel()
+    private let seenView = UIView()
+    private let ratingImageView = UIImageView()
+    private let ratingLabel = UILabel()
+    private let calenderImageView = UIImageView()
+    private let calenderLabel = UILabel()
+    private let typeImageView = UIImageView()
+    private let typeLabel = UILabel()
+    private let descriptionLabel = UILabel()
     
     //MARK: - Life Cycle
     
@@ -37,7 +38,7 @@ class DetailVC: UIViewController {
     
     //MARK: - Functions
     
-    func setupUI() {
+    private func setupUI() {
         view.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
         
         let backButton = UIButton(type: .system)
@@ -79,23 +80,13 @@ class DetailVC: UIViewController {
         detailImageView.backgroundColor = .white
         detailImageView.layer.cornerRadius = 15
         detailImageView.layer.masksToBounds = true
-        let baseURL = "https://image.tmdb.org/t/p/w500/"
-        let posterPath = selectedMovie?.backdropPath ?? ""
-        let backdropPathString = baseURL + posterPath
-        if let backdropURL = URL(string: backdropPathString) {
-            if let imageData = try? Data(contentsOf: backdropURL) {
-                if let backdropImage = UIImage(data: imageData) {
+        guard let backdropPath = selectedMovie?.backdropPath else { return }
+        guard let x = MovieService.shared.getMoviePosterImage(imgURL: backdropPath) else { return }
+                if let backdropImage = UIImage(data: x) {
                     detailImageView.image = backdropImage
                 } else {
                     print("Unable to create UIImage")
                 }
-            } else {
-                print("Unable to fetch data")
-            }
-        } else {
-            print("Invalid URL")
-        }
-        //        detailImageView.image = UIImage(named: "spiderman1")
         detailImageView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(30)
@@ -140,22 +131,13 @@ class DetailVC: UIViewController {
         posterImageView.backgroundColor = .orange
         posterImageView.layer.cornerRadius = 15
         posterImageView.layer.masksToBounds = true
-        let baseURL1 = "https://image.tmdb.org/t/p/w220_and_h330_face/"
-        let posterPath1 = selectedMovie?.posterPath ?? ""
-        let backdropPathString1 = baseURL1 + posterPath1
-        if let backdropURL1 = URL(string: backdropPathString1) {
-            if let imageData1 = try? Data(contentsOf: backdropURL1) {
-                if let backdropImage1 = UIImage(data: imageData1) {
-                    posterImageView.image = backdropImage1
+        guard let posterPath = selectedMovie?.posterPath else { return }
+        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { return }
+                if let posterImage = UIImage(data: x) {
+                    posterImageView.image = posterImage
                 } else {
                     print("Unable to create UIImage")
                 }
-            } else {
-                print("Unable to fetch data")
-            }
-        } else {
-            print("Invalid URL")
-        }
         posterImageView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(29)
             make.top.equalTo(detailImageView.snp.bottom).inset(60)
@@ -260,7 +242,7 @@ class DetailVC: UIViewController {
             make.width.equalTo(317)
         }
     }
-    func saveToCoreData() {
+    private func saveToCoreData() {
         guard let data = selectedMovie else { return }
         
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
@@ -295,7 +277,6 @@ class DetailVC: UIViewController {
     @objc func saveButtonTapped() {
         saveToCoreData()
         dismiss(animated: true, completion: nil)
-
     }
     
 }

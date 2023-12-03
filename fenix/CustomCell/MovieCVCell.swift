@@ -9,12 +9,15 @@ import UIKit
 import SnapKit
 import CoreData
 
-class MovieCVCell: UICollectionViewCell {
+final class MovieCVCell: UICollectionViewCell {
     
     //MARK: - Properties
     
+    var movies: [Movie] = []
+    var context: NSManagedObjectContext?
     static let identifier = "MovieCVCell"
-    static let shared = MovieCVCell()
+    
+    //MARK: - UI Elements
     
     private var movieImageView = UIImageView()
     private var movieNameLabel = UILabel()
@@ -26,9 +29,6 @@ class MovieCVCell: UICollectionViewCell {
     private var movieYearLabel = UILabel()
     private var movieTimeImageView = UIImageView()
     private var movieTimeLabel = UILabel()
-    
-    var movies: [Movie] = []
-    var context: NSManagedObjectContext?
     
     //MARK: - Life Cycle
     
@@ -43,11 +43,10 @@ class MovieCVCell: UICollectionViewCell {
     
     //MARK: - Functions
     
-    func setupUI() {
+    private func setupUI() {
         
         contentView.addSubview(movieImageView)
         contentView.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
-        //        movieImageView.image = UIImage(named: "spiderman")
         movieImageView.layer.cornerRadius = 15
         movieImageView.layer.masksToBounds = true
         movieImageView.snp.makeConstraints { make in
@@ -123,74 +122,52 @@ class MovieCVCell: UICollectionViewCell {
             make.top.equalTo(movieTypeLabel.snp.bottom).offset(5)
             make.left.equalTo(movieYearImageView.snp.right).offset(4)
         }
-        contentView.addSubview(movieTimeImageView)
-        movieTimeImageView.image = UIImage(named: "time")
-        let tintedImage3 = movieTimeImageView.image?.withTintColor(.white, renderingMode: .alwaysOriginal)
-        movieTimeImageView.image = tintedImage3
-        movieTimeImageView.snp.makeConstraints { make in
-            make.top.equalTo(movieYearLabel.snp.bottom).offset(5)
-            make.left.equalTo(movieImageView.snp.right).offset(12)
-            make.width.height.equalTo(16)
-        }
-        contentView.addSubview(movieTimeLabel)
-        movieTimeLabel.textColor = .white
-        movieTimeLabel.text = "139 Minutes"
-        movieTimeLabel.font = UIFont(name: "Poppins", size: 12)
-        movieTimeLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-        movieTimeLabel.snp.makeConstraints { make in
-            make.top.equalTo(movieYearLabel.snp.bottom).offset(5)
-            make.left.equalTo(movieTimeImageView.snp.right).offset(4)
-        }
+        //        contentView.addSubview(movieTimeImageView)
+        //        movieTimeImageView.image = UIImage(named: "time")
+        //        let tintedImage3 = movieTimeImageView.image?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        //        movieTimeImageView.image = tintedImage3
+        //        movieTimeImageView.snp.makeConstraints { make in
+        //            make.top.equalTo(movieYearLabel.snp.bottom).offset(5)
+        //            make.left.equalTo(movieImageView.snp.right).offset(12)
+        //            make.width.height.equalTo(16)
+        //        }
+        //        contentView.addSubview(movieTimeLabel)
+        //        movieTimeLabel.textColor = .white
+        //        movieTimeLabel.text = "139 Minutes"
+        //        movieTimeLabel.font = UIFont(name: "Poppins", size: 12)
+        //        movieTimeLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+        //        movieTimeLabel.snp.makeConstraints { make in
+        //            make.top.equalTo(movieYearLabel.snp.bottom).offset(5)
+        //            make.left.equalTo(movieTimeImageView.snp.right).offset(4)
+        //        }
     }
     func configure(with item: Movie) {
-        let baseURL = "https://image.tmdb.org/t/p/w220_and_h330_face/"
-        let posterPath = item.posterPath ?? ""
-        let backdropPathString = baseURL + posterPath
-        if let backdropURL = URL(string: backdropPathString) {
-            if let imageData = try? Data(contentsOf: backdropURL) {
-                if let backdropImage = UIImage(data: imageData) {
-                    movieImageView.image = backdropImage
-                } else {
-                    print("Unable to create UIImage")
-                }
-            } else {
-                print("Unable to fetch data")
-            }
-        } else {
-            print("Invalid URL")
-        }
         movieNameLabel.text = item.title
         movieRating.text = "\(item.voteAverage ?? 1.1)"
         movieTypeLabel.text = item.overview
         movieYearLabel.text = item.releaseDate
-        movieTimeLabel.text = "123"
+        
+        guard let posterPath = item.posterPath else { return }
+        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { return }
+        if let backdropImage = UIImage(data: x) {
+            movieImageView.image = backdropImage
+        } else {
+            print("Unable to create UIImage")
+        }
     }
     func configureWithCoreData(with item: MovieItems) {
-
-//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        context = appDelegate.persistentContainer.viewContext
-//        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "MovieItem")
-//        request.returnsObjectsAsFaults = false
-        let baseURL = "https://image.tmdb.org/t/p/w220_and_h330_face/"
-        let posterPath = item.posterPath ?? ""
-        let backdropPathString = baseURL + posterPath
-        if let backdropURL = URL(string: backdropPathString) {
-            if let imageData = try? Data(contentsOf: backdropURL) {
-                if let backdropImage = UIImage(data: imageData) {
-                    movieImageView.image = backdropImage
-                } else {
-                    print("Unable to create UIImage")
-                }
-            } else {
-                print("Unable to fetch data")
-            }
-        } else {
-            print("Invalid URL")
-        }
         movieNameLabel.text = item.title
         movieRating.text = "\(item.voteAverage)"
         movieTypeLabel.text = "Action"
         movieYearLabel.text = item.releaseDate
+        
+        guard let posterPath = item.posterPath else { return }
+        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { returns }
+        if let backdropImage = UIImage(data: x) {
+            movieImageView.image = backdropImage
+        } else {
+            print("Unable to create UIImage")
+        }
     }
     
 }
