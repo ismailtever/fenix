@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import CoreData
+import SDWebImage
 
 final class MovieCVCell: UICollectionViewCell {
     
@@ -44,6 +45,7 @@ final class MovieCVCell: UICollectionViewCell {
     private func setupUI() {
         
         contentView.addSubview(movieImageView)
+        
         contentView.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
         movieImageView.layer.cornerRadius = 15
         movieImageView.layer.masksToBounds = true
