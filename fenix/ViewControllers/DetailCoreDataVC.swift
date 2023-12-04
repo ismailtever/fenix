@@ -43,15 +43,15 @@ final class DetailCoreDataVC: UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.1329745948, green: 0.1571635008, blue: 0.1828652918, alpha: 1)
         
         let backButton = UIButton(type: .system)
-        backButton.setTitle("<", for: .normal)
+        backButton.setImage(UIImage(named: "backButton"), for: .normal)
         backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         backButton.tintColor = .white
         view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             make.left.equalToSuperview().offset(32)
-            make.width.equalTo(44)
-            make.height.equalTo(44)
+            make.width.equalTo(24)
+            make.height.equalTo(24)
         }
         
         let titleLabel = UILabel()
