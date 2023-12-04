@@ -8,7 +8,6 @@
 import UIKit
 import SnapKit
 import CoreData
-import SDWebImage
 
 final class MovieCVCell: UICollectionViewCell {
     
@@ -146,13 +145,19 @@ final class MovieCVCell: UICollectionViewCell {
         movieRating.text = "\(item.voteAverage ?? 1.1)"
         movieTypeLabel.text = item.overview
         movieYearLabel.text = item.releaseDate
-        
         guard let posterPath = item.posterPath else { return }
-        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { return }
-        if let backdropImage = UIImage(data: x) {
-            movieImageView.image = backdropImage
-        } else {
-            print("Unable to create UIImage")
+        MovieService.shared.getMoviePosterImage(imgURL: posterPath) { (data) in
+            DispatchQueue.main.async {
+                if let imageData = data {
+                    if let backdropImage = UIImage(data: imageData) {
+                        self.movieImageView.image = backdropImage
+                    } else {
+                        print("Unable to create UIImage")
+                    }
+                } else {
+                    print("Unable to fetch image data")
+                }
+            }
         }
     }
     func configureWithCoreData(with item: MovieItems) {
@@ -160,13 +165,19 @@ final class MovieCVCell: UICollectionViewCell {
         movieRating.text = "\(item.voteAverage)"
         movieTypeLabel.text = "Action"
         movieYearLabel.text = item.releaseDate
-        
         guard let posterPath = item.posterPath else { return }
-        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { return }
-        if let backdropImage = UIImage(data: x) {
-            movieImageView.image = backdropImage
-        } else {
-            print("Unable to create UIImage")
+        MovieService.shared.getMoviePosterImage(imgURL: posterPath) { (data) in
+            DispatchQueue.main.async {
+                if let imageData = data {
+                    if let backdropImage = UIImage(data: imageData) {
+                        self.movieImageView.image = backdropImage
+                    } else {
+                        print("Unable to create UIImage")
+                    }
+                } else {
+                    print("Unable to fetch image data")
+                }
+            }
         }
     }
     

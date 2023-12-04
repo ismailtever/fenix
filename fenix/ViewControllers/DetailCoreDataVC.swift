@@ -82,11 +82,18 @@ final class DetailCoreDataVC: UIViewController {
         detailImageView.layer.cornerRadius = 15
         detailImageView.layer.masksToBounds = true
         guard let backdropPath = selectedDB?.backdropPath else { return }
-        guard let x = MovieService.shared.getMoviePosterImage(imgURL: backdropPath) else { return }
-        if let backdropImage = UIImage(data: x) {
-            detailImageView.image = backdropImage
-        } else {
-            print("Unable to create UIImage")
+        MovieService.shared.getMoviePosterImage(imgURL: backdropPath) { (data) in
+            DispatchQueue.main.async {
+                if let imageData = data {
+                    if let backdropImage = UIImage(data: imageData) {
+                        self.detailImageView.image = backdropImage
+                    } else {
+                        print("Unable to create UIImage")
+                    }
+                } else {
+                    print("Unable to fetch backdrop image data")
+                }
+            }
         }
         detailImageView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
@@ -133,12 +140,19 @@ final class DetailCoreDataVC: UIViewController {
         posterImageView.layer.cornerRadius = 15
         posterImageView.layer.masksToBounds = true
         guard let posterPath = selectedDB?.posterPath else { return }
-        guard let x = MovieService.shared.getMoviePosterImage(imgURL: posterPath) else { return }
-                if let posterImage = UIImage(data: x) {
-                    posterImageView.image = posterImage
+        MovieService.shared.getMoviePosterImage(imgURL: posterPath) { (data) in
+            DispatchQueue.main.async {
+                if let imageData = data {
+                    if let posterImage = UIImage(data: imageData) {
+                        self.posterImageView.image = posterImage
+                    } else {
+                        print("Unable to create UIImage")
+                    }
                 } else {
-                    print("Unable to create UIImage")
+                    print("Unable to fetch poster image data")
                 }
+            }
+        }
         posterImageView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(29)
             make.top.equalTo(detailImageView.snp.bottom).inset(60)

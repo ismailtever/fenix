@@ -24,15 +24,26 @@ class MovieService {
         }
     }
     
-    func getMoviePosterImage(imgURL: String) -> Data? {
+    func getMoviePosterImage(imgURL: String, completion: @escaping (Data?) -> Void) {
         let backdropPathString = Request.posterImage.path + imgURL
-        guard let backdropURL = URL(string: backdropPathString) else { return nil }
-            if let imageData = try? Data(contentsOf: backdropURL) {
-                return imageData
-            } else {
-                print("Unable to fetch data")
-                return nil
+        guard let backdropURL = URL(string: backdropPathString) else {
+            completion(nil)
+            return
+        }
+        let task = URLSession.shared.dataTask(with: backdropURL) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                completion(nil)
+                return
             }
+            guard let data = data else {
+                print("No data received")
+                completion(nil)
+                return
+            }
+            completion(data)
+        }
+        task.resume()
     }
     
     func getMovieWideImage(imgURL: String) -> Data? {
