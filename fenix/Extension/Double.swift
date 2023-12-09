@@ -8,6 +8,8 @@
 import Foundation
 
 extension Double {
-    
+    func formattedString(decimalPlaces: Int = 1) -> String {
+        return String(format: "%.\(decimalPlaces)f", self)
+    }
 }
 

@@ -7,15 +7,20 @@
 
 import UIKit
 import SnapKit
-import Alamofire
 
 final class MovieVC: UIViewController {
     
     //MARK: - Properties
     
-    var collectionView: UICollectionView!
-    var searchBar : UISearchBar!
+    private let debouncer = Debouncer(delay: 1.5)
+    private var currentPage = 1
+    private var isFetching = false
+    
     var movies: [Movie] = []
+    
+    //MARK: - UI Elements
+    private var collectionView: UICollectionView!
+    private var searchBar : UISearchBar!
     
     //MARK: - Life Cycle
     override func viewDidLoad() {
@@ -63,17 +68,33 @@ final class MovieVC: UIViewController {
             make.height.equalTo(600)
         }
     }
+    
+    private func fetchScrollNextPage() {
+        guard isFetching == false else { return }
+        
+        isFetching = true
+        
+        MovieService.shared.getMovies(query: searchBar.text ?? "", page: currentPage + 1) { moviesResponse in
+            
+            if let newMovies = moviesResponse.results {
+                self.movies.append(contentsOf: newMovies)
+                self.currentPage += 1
+            }
+            self.isFetching = false
+            self.collectionView.reloadData()
+        } failure: { error in
+            print(error)
+            self.isFetching = false
+        }
+    }
 }
 
 // MARK: - Extensions
 
 extension MovieVC: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // Return the number of posts
         print(movies.count)
         return movies.count
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -81,9 +102,7 @@ extension MovieVC: UICollectionViewDataSource {
         let movie = movies[indexPath.item]
         cell.configure(with: movie)
         return cell
-        
     }
-    
 }
 
 extension MovieVC: UICollectionViewDelegateFlowLayout {
@@ -94,15 +113,15 @@ extension MovieVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 24
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }
+
 extension MovieVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         let selectedMovie = movies[indexPath.row]
-        
         let detailVC = DetailVC()
         detailVC.selectedMovie = selectedMovie
         detailVC.modalPresentationStyle = .fullScreen
@@ -113,28 +132,42 @@ extension MovieVC: UICollectionViewDelegate {
 extension MovieVC: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let query = searchBar.text, !query.isEmpty {
-            MovieService.shared.getMovies(query:query) { moviesResponse in
-                self.movies = moviesResponse.results ?? []
-            } failure: { error in
-                print(error)
-            }
-        }
-        searchBar.resignFirstResponder()
-    }
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        let startSearchIndex = 2
-        if(searchText.count > startSearchIndex){
-            DispatchQueue.main.async {
-                MovieService.shared.getMovies(query:searchText) { moviesResponse in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                MovieService.shared.getMovies(query: query, page: 1) { moviesResponse in
                     self.movies = moviesResponse.results ?? []
                     self.collectionView.reloadData()
                 } failure: { error in
                     print(error)
                 }
             }
-        }else{
-            self.movies = []
         }
-        self.collectionView.reloadData()
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        let startSearchIndex = 2
+        debouncer.debounce {
+            if searchText.count > startSearchIndex {
+                MovieService.shared.getMovies(query: searchText, page: 1) { moviesResponse in
+                    self.movies = moviesResponse.results ?? []
+                    self.collectionView.reloadData()
+                } failure: { error in
+                    print(error)
+                }
+            } else {
+                self.movies = []
+                self.collectionView.reloadData()
+            }
+        }
+    }
+}
+
+extension MovieVC: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height - scrollView.frame.size.height
+        if offsetY > contentHeight && !isFetching {
+            fetchScrollNextPage()
+        }
     }
 }

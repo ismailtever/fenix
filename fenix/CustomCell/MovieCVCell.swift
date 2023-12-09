@@ -13,7 +13,6 @@ final class MovieCVCell: UICollectionViewCell {
     
     //MARK: - Properties
     var movies: [Movie] = []
-    var context: NSManagedObjectContext?
     static let identifier = "MovieCVCell"
     
     //MARK: - UI Elements
@@ -55,7 +54,6 @@ final class MovieCVCell: UICollectionViewCell {
         }
         
         contentView.addSubview(movieNameLabel)
-        movieNameLabel.text = "Spiderman"
         movieNameLabel.textColor = .white
         movieNameLabel.numberOfLines = 0
         movieNameLabel.font = UIFont.boldSystemFont(ofSize: 16)
@@ -114,70 +112,43 @@ final class MovieCVCell: UICollectionViewCell {
         }
         contentView.addSubview(movieYearLabel)
         movieYearLabel.textColor = .white
-        movieYearLabel.text = "2021"
         movieYearLabel.font = UIFont(name: "Poppins", size: 12)
         movieYearLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
         movieYearLabel.snp.makeConstraints { make in
             make.top.equalTo(movieTypeLabel.snp.bottom).offset(5)
             make.left.equalTo(movieYearImageView.snp.right).offset(4)
         }
-        //        contentView.addSubview(movieTimeImageView)
-        //        movieTimeImageView.image = UIImage(named: "time")
-        //        let tintedImage3 = movieTimeImageView.image?.withTintColor(.white, renderingMode: .alwaysOriginal)
-        //        movieTimeImageView.image = tintedImage3
-        //        movieTimeImageView.snp.makeConstraints { make in
-        //            make.top.equalTo(movieYearLabel.snp.bottom).offset(5)
-        //            make.left.equalTo(movieImageView.snp.right).offset(12)
-        //            make.width.height.equalTo(16)
-        //        }
-        //        contentView.addSubview(movieTimeLabel)
-        //        movieTimeLabel.textColor = .white
-        //        movieTimeLabel.text = "139 Minutes"
-        //        movieTimeLabel.font = UIFont(name: "Poppins", size: 12)
-        //        movieTimeLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-        //        movieTimeLabel.snp.makeConstraints { make in
-        //            make.top.equalTo(movieYearLabel.snp.bottom).offset(5)
-        //            make.left.equalTo(movieTimeImageView.snp.right).offset(4)
-        //        }
     }
     func configure(with item: Movie) {
         movieNameLabel.text = item.title
-        movieRating.text = "\(item.voteAverage ?? 1.1)"
+        
+        let formattedString = item.voteAverage?.formattedString()
+        movieRating.text = formattedString
+        
         movieTypeLabel.text = item.overview
         movieYearLabel.text = item.releaseDate
+        
         guard let posterPath = item.posterPath else { return }
-        MovieService.shared.getMoviePosterImage(imgURL: posterPath) { (data) in
-            DispatchQueue.main.async {
-                if let imageData = data {
-                    if let backdropImage = UIImage(data: imageData) {
-                        self.movieImageView.image = backdropImage
-                    } else {
-                        print("Unable to create UIImage")
-                    }
-                } else {
-                    print("Unable to fetch image data")
-                }
-            }
+        MovieService.shared.getMovieImage(imgURL: posterPath, imgPath: .posterPathString) { movieImageData in
+            self.movieImageView.image = UIImage(data:movieImageData ?? Data())
+        } failure: { err in
+            print(err)
         }
     }
+    
     func configureWithCoreData(with item: MovieItems) {
         movieNameLabel.text = item.title
-        movieRating.text = "\(item.voteAverage)"
+        
+        let formattedString = item.voteAverage.formattedString()
+        movieRating.text = formattedString
+        
         movieTypeLabel.text = "Action"
         movieYearLabel.text = item.releaseDate
         guard let posterPath = item.posterPath else { return }
-        MovieService.shared.getMoviePosterImage(imgURL: posterPath) { (data) in
-            DispatchQueue.main.async {
-                if let imageData = data {
-                    if let backdropImage = UIImage(data: imageData) {
-                        self.movieImageView.image = backdropImage
-                    } else {
-                        print("Unable to create UIImage")
-                    }
-                } else {
-                    print("Unable to fetch image data")
-                }
-            }
+        MovieService.shared.getMovieImage(imgURL: posterPath, imgPath: .posterPathString) { movieImageData in
+            self.movieImageView.image = UIImage(data:movieImageData ?? Data())
+        } failure: { err in
+            print(err)
         }
     }
     

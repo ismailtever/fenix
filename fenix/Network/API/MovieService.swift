@@ -7,13 +7,19 @@
 
 import Foundation
 import Alamofire
-class MovieService {
+
+final class MovieService {
     
     static let shared = MovieService()
-
-    func getMovies(query: String , success: @escaping(Movies)->(), failure: @escaping(ErrorMessage)->()) {
     
-        let urlWithSearchParams = Request.movies.path + "&query=" + query
+    enum ImagePath {
+        case posterPathString
+        case backdropPathString
+    }
+    
+    func getMovies(query: String, page: Int, success: @escaping(Movies)->(), failure: @escaping(ErrorMessage)->()) {
+        
+        let urlWithSearchParams = Request.movies.path + "&query=" + query + "&page=" + String(page)
         NetworkManager.shared.request(type: Movies.self, url: urlWithSearchParams, headers: Header.shared.header(), params: nil, method: .get) { response in
             switch response {
             case .success(let movies):
@@ -24,36 +30,25 @@ class MovieService {
         }
     }
     
-    func getMoviePosterImage(imgURL: String, completion: @escaping (Data?) -> Void) {
-        let backdropPathString = Request.posterImage.path + imgURL
-        guard let backdropURL = URL(string: backdropPathString) else {
-            completion(nil)
-            return
+    func getMovieImage(imgURL: String,imgPath: ImagePath, success: @escaping (Data?) -> Void,  failure: @escaping(ErrorMessage)->()) {
+        
+        var imgPathStr = ""
+        
+        switch imgPath {
+        case .backdropPathString:
+            imgPathStr = Request.wideImage.path + imgURL
+        case .posterPathString:
+            imgPathStr = Request.posterImage.path + imgURL
         }
-        let task = URLSession.shared.dataTask(with: backdropURL) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                completion(nil)
-                return
+        
+        NetworkManager.shared.requestImage(type: Data.self, url: imgPathStr, headers: nil, params: nil, method: .get) { response in
+            
+            switch response {
+            case .success(let movieImageData):
+                success(movieImageData)
+            case .messageFailure(let errorMessage):
+                failure(errorMessage)
             }
-            guard let data = data else {
-                print("No data received")
-                completion(nil)
-                return
-            }
-            completion(data)
         }
-        task.resume()
-    }
-    
-    func getMovieWideImage(imgURL: String) -> Data? {
-        let backdropPathString = Request.wideImage.path + imgURL
-        guard let backdropURL = URL(string: backdropPathString) else { return nil }
-            if let imageData = try? Data(contentsOf: backdropURL) {
-                return imageData
-            } else {
-                print("Unable to fetch data")
-                return nil
-            }
     }
 }

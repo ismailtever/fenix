@@ -3,4 +3,54 @@
    uuid = "0D3E91B6-C00F-4C0B-8971-35DF332B495C"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8DD4DA35-B868-48C6-9755-A0FFB12D0CF3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "fenix/ViewControllers/DetailCoreDataVC.swift"
+            startingColumnNumber = "19"
+            endingColumnNumber = "19"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "top"
+            landmarkType = "0">
+            <Locations>
+               <Location
+                  uuid = "8DD4DA35-B868-48C6-9755-A0FFB12D0CF3 - 8fbe34f87b9052c8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "fenix.DetailCoreDataVC.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; fenix.DetailCoreDataVC"
+                  moduleName = "fenix"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ismailtever/Desktop/fenix/fenix/ViewControllers/DetailCoreDataVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "280">
+               </Location>
+               <Location
+                  uuid = "8DD4DA35-B868-48C6-9755-A0FFB12D0CF3 - cad1a89c843f4ebe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "fenix.DetailCoreDataVC.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;fenix.DetailCoreDataVC&gt;"
+                  moduleName = "fenix"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ismailtever/Desktop/fenix/fenix/ViewControllers/DetailCoreDataVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "240">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

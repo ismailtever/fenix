@@ -11,10 +11,8 @@ import CoreData
 final class DetailVC: UIViewController {
     
     //MARK: - Properties
-    static let shared = DetailVC()
-    var dataBaseData: [MovieItems] = []
-    var selectedDB: MovieItems?
     var selectedMovie: Movie?
+    var selectedDB: MovieItems?
     
     //MARK: - UI Elements
     private let detailImageView = UIImageView()
@@ -28,12 +26,15 @@ final class DetailVC: UIViewController {
     private let typeImageView = UIImageView()
     private let typeLabel = UILabel()
     private let descriptionLabel = UILabel()
+    private let saveButton = UIButton(type: .system)
     
     //MARK: - Life Cycle
-    
+    override func viewWillAppear(_ animated: Bool) {
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        populateData()
     }
     
     //MARK: - Functions
@@ -64,7 +65,6 @@ final class DetailVC: UIViewController {
             make.centerY.equalTo(backButton)
         }
         
-        let saveButton = UIButton(type: .system)
         saveButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         saveButton.tintColor = .white
@@ -80,20 +80,7 @@ final class DetailVC: UIViewController {
         detailImageView.backgroundColor = .white
         detailImageView.layer.cornerRadius = 15
         detailImageView.layer.masksToBounds = true
-        guard let backdropPath = selectedMovie?.backdropPath else { return }
-        MovieService.shared.getMoviePosterImage(imgURL: backdropPath) { (data) in
-            DispatchQueue.main.async {
-                if let imageData = data {
-                    if let backdropImage = UIImage(data: imageData) {
-                        self.detailImageView.image = backdropImage
-                    } else {
-                        print("Unable to create UIImage")
-                    }
-                } else {
-                    print("Unable to fetch backdrop image data")
-                }
-            }
-        }
+        detailImageView.clipsToBounds = true
         detailImageView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(30)
@@ -126,7 +113,6 @@ final class DetailVC: UIViewController {
         ratingLabel.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
         ratingLabel.numberOfLines = 0
         ratingLabel.textColor = #colorLiteral(red: 1, green: 0.5283361673, blue: 0, alpha: 1)
-        ratingLabel.text = "\(selectedMovie?.voteAverage ?? 1.1)"
         ratingLabel.snp.makeConstraints { make in
             make.left.equalTo(ratingImageView.snp.right).offset(4)
             make.bottom.equalTo(ratingImageView.snp.bottom)
@@ -138,20 +124,6 @@ final class DetailVC: UIViewController {
         posterImageView.backgroundColor = .orange
         posterImageView.layer.cornerRadius = 15
         posterImageView.layer.masksToBounds = true
-        guard let posterPath = selectedMovie?.posterPath else { return }
-        MovieService.shared.getMoviePosterImage(imgURL: posterPath) { (data) in
-            DispatchQueue.main.async {
-                if let imageData = data {
-                    if let posterImage = UIImage(data: imageData) {
-                        self.posterImageView.image = posterImage
-                    } else {
-                        print("Unable to create UIImage")
-                    }
-                } else {
-                    print("Unable to fetch poster image data")
-                }
-            }
-        }
         posterImageView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(29)
             make.top.equalTo(detailImageView.snp.bottom).inset(60)
@@ -164,7 +136,6 @@ final class DetailVC: UIViewController {
         posterLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         posterLabel.numberOfLines = 0
         posterLabel.textColor = .white
-        posterLabel.text = selectedMovie?.title
         posterLabel.snp.makeConstraints { make in
             make.left.equalTo(posterImageView.snp.right).offset(29)
             make.right.equalToSuperview().offset(-29)
@@ -183,7 +154,6 @@ final class DetailVC: UIViewController {
         
         view.addSubview(calenderLabel)
         calenderLabel.font = UIFont(name: "Montserrat", size: 12)
-        calenderLabel.text = selectedMovie?.releaseDate
         calenderLabel.textColor = #colorLiteral(red: 0.5730340481, green: 0.5718125701, blue: 0.6154962778, alpha: 1)
         calenderLabel.snp.makeConstraints { make in
             make.left.equalTo(calenderImageView.snp.right).offset(4)
@@ -244,7 +214,6 @@ final class DetailVC: UIViewController {
             make.top.equalTo(aboutLabel.snp.bottom).offset(4)
         }
         
-        descriptionLabel.text = selectedMovie?.overview
         descriptionLabel.textColor = .white
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = UIFont(name: "Poppins", size: 12)
@@ -256,31 +225,77 @@ final class DetailVC: UIViewController {
             make.width.equalTo(317)
         }
     }
-    private func saveToCoreData() {
-        guard let data = selectedMovie else { return }
+    
+    private func isMovieSaved(id: Int) -> Bool {
+        return CoreDataManager.shared.isMovieSaved(id: id)
+    }
+    
+    private func setInitialBookmarkState() {
+        var movieID: Int?
         
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        let managedObjectContext = appDelegate?.persistentContainer.viewContext
-        
-        if let entity = NSEntityDescription.entity(forEntityName: "MovieItems", in: managedObjectContext!),
-           let taskItem = NSManagedObject(entity: entity, insertInto: managedObjectContext!) as? MovieItems {
-            
-            taskItem.title = data.title
-            taskItem.backdropPath = data.backdropPath
-            taskItem.overview = data.overview
-            taskItem.posterPath = data.posterPath
-            taskItem.voteAverage = data.voteAverage ?? 1.1
-            taskItem.releaseDate = data.releaseDate
-            
-            do {
-                try managedObjectContext?.save()
-                print("saved to core data")
-            } catch {
-                print("Saving to Core Data failed: \(error.localizedDescription)")
-            }
+        if let id = selectedMovie?.id {
+            movieID = id
+        } else if let id = selectedDB?.id {
+            movieID = Int(id)
+        }
+        if let id = movieID {
+            let isSaved = isMovieSaved(id: id)
+            let bookmarkImage = isSaved ? UIImage(systemName: "bookmark.fill") : UIImage(systemName: "bookmark")
+            saveButton.setImage(bookmarkImage, for: .normal)
         }
     }
     
+    private func populateData() {
+        if let selectedMovie = selectedMovie {
+            
+            if let backdropPath = selectedMovie.backdropPath {
+                MovieService.shared.getMovieImage(imgURL: backdropPath, imgPath: .backdropPathString) { movieImageData in
+                    self.detailImageView.image = UIImage(data: movieImageData ?? Data())
+                } failure: { err in
+                    print(err)
+                }
+            }
+            let formattedString = selectedMovie.voteAverage?.formattedString()
+            ratingLabel.text = formattedString
+            
+            if let posterPath = selectedMovie.posterPath {
+                
+                MovieService.shared.getMovieImage(imgURL: posterPath,imgPath: .posterPathString) { movieImageData in
+                    self.posterImageView.image = UIImage(data: movieImageData ?? Data())
+                } failure: { err in
+                    print(err)
+                }
+            }
+            posterLabel.text = selectedMovie.title
+            calenderLabel.text = selectedMovie.releaseDate
+            descriptionLabel.text = selectedMovie.overview
+            setInitialBookmarkState()
+            
+        } else if selectedDB == selectedDB {
+            
+            if let backdropPath = selectedDB?.backdropPath {
+                MovieService.shared.getMovieImage(imgURL: backdropPath,imgPath: .backdropPathString) { movieImageData in
+                    self.detailImageView.image = UIImage(data: movieImageData ?? Data())
+                } failure: { err in
+                    print(err)
+                }
+            }
+            let formattedString = selectedDB?.voteAverage.formattedString()
+            ratingLabel.text = formattedString
+            
+            if let posterPath = selectedDB?.posterPath {
+                MovieService.shared.getMovieImage(imgURL: posterPath, imgPath: .posterPathString) { movieImageData in
+                    self.posterImageView.image = UIImage(data: movieImageData ?? Data())
+                } failure: { err in
+                    print(err)
+                }
+            }
+            posterLabel.text = selectedDB?.title
+            calenderLabel.text = selectedDB?.releaseDate
+            descriptionLabel.text = selectedDB?.overview
+            setInitialBookmarkState()
+        }
+    }
     
     //MARK: - OBJC Functions
     
@@ -289,7 +304,21 @@ final class DetailVC: UIViewController {
     }
     
     @objc func saveButtonTapped() {
-        saveToCoreData()
+        if let data = selectedMovie {
+            let isSaved = CoreDataManager.shared.isMovieSaved(id: data.id ?? 0)
+            if isSaved {
+                CoreDataManager.shared.removeMovieItemFromCoreData(id: data.id ?? 0)
+            } else {
+                CoreDataManager.shared.saveMovieToCoreData(data: data)
+            }
+            let bookmarkImage = isSaved ? UIImage(systemName: "bookmark") : UIImage(systemName: "bookmark.fill")
+            saveButton.setImage(bookmarkImage, for: .normal)
+        } else if let data = selectedDB {
+            let isSaved = CoreDataManager.shared.isMovieSaved(id: Int(data.id))
+            if isSaved == true {
+                CoreDataManager.shared.removeMovieItemFromCoreData(id: Int(data.id))
+            }
+        }
         dismiss(animated: true, completion: nil)
     }
     

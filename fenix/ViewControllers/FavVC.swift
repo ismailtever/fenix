@@ -11,15 +11,16 @@ import CoreData
 final class FavVC: UIViewController {
     
     //MARK: - Properties
+    private var coreDataItems: [MovieItems] = []
     
-    private var dataBaseData: [MovieItems] = []
-    
+    //MARK: - UI Elements
     private var collectionView: UICollectionView!
     
     //MARK: Life Cycle
     override func viewWillAppear(_ animated: Bool) {
-        fetchFromCoreData()
-        print("Data Count: \(dataBaseData.count)")
+        coreDataItems = CoreDataManager.shared.fetchAllMovieItems()
+        collectionView.reloadData()
+        print("Core Data Items Count: \(coreDataItems.count)")
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,20 +68,10 @@ final class FavVC: UIViewController {
             make.top.equalTo(titleLabel.snp.bottom).offset(44)
             make.width.equalToSuperview()
             make.height.equalTo(600)
-
         }
     }
     
-    func fetchFromCoreData() {
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        let managedObjectContext = appDelegate?.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<MovieItems>(entityName: "MovieItems")
-        dataBaseData = try! managedObjectContext!.fetch(fetchRequest)
-        collectionView.reloadData()
-    }
-    
     //MARK: - OBJC Functions
-    
     @objc func backButtonTapped() {
         
     }
@@ -89,19 +80,16 @@ final class FavVC: UIViewController {
 // MARK: - Extensions
 
 extension FavVC: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataBaseData.count
-        
+        return coreDataItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCVCell.identifier, for: indexPath) as! MovieCVCell
-        let movieDB = dataBaseData[indexPath.row]
+        let movieDB = coreDataItems[indexPath.row]
         cell.configureWithCoreData(with: movieDB)
         return cell
     }
-    
 }
 extension FavVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -111,16 +99,17 @@ extension FavVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 24
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }
+
 extension FavVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedDBMovie = dataBaseData[indexPath.row]
-        let detailVC = DetailCoreDataVC()
+        let selectedDBMovie = coreDataItems[indexPath.row]
+        let detailVC = DetailVC()
         detailVC.selectedDB = selectedDBMovie
-
         detailVC.modalPresentationStyle = .fullScreen
         present(detailVC, animated: true, completion: nil)
     }
