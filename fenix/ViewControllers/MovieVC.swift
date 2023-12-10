@@ -11,7 +11,6 @@ import SnapKit
 final class MovieVC: UIViewController {
     
     //MARK: - Properties
-    
     private let debouncer = Debouncer(delay: 1.5)
     private var currentPage = 1
     private var isFetching = false
@@ -146,19 +145,20 @@ extension MovieVC: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let startSearchIndex = 2
-        debouncer.debounce {
-            if searchText.count > startSearchIndex {
-                MovieService.shared.getMovies(query: searchText, page: 1) { moviesResponse in
-                    self.movies = moviesResponse.results ?? []
+            debouncer.debounce {
+                if searchText.count > startSearchIndex {
+                    let query = searchText.replacingOccurrences(of: " ", with: "%20")
+                    MovieService.shared.getMovies(query: query, page: 1) { moviesResponse in
+                        self.movies = moviesResponse.results ?? []
+                        self.collectionView.reloadData()
+                    } failure: { error in
+                        print(error)
+                    }
+                } else {
+                    self.movies = []
                     self.collectionView.reloadData()
-                } failure: { error in
-                    print(error)
                 }
-            } else {
-                self.movies = []
-                self.collectionView.reloadData()
             }
-        }
     }
 }
 

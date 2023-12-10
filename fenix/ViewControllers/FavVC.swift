@@ -107,9 +107,9 @@ extension FavVC: UICollectionViewDelegateFlowLayout {
 
 extension FavVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedDBMovie = coreDataItems[indexPath.row]
+        let selectedCDMovie = coreDataItems[indexPath.row]
         let detailVC = DetailVC()
-        detailVC.selectedDB = selectedDBMovie
+        detailVC.selectedCDMovie = selectedCDMovie
         detailVC.modalPresentationStyle = .fullScreen
         present(detailVC, animated: true, completion: nil)
     }

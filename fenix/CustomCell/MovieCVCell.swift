@@ -130,7 +130,11 @@ final class MovieCVCell: UICollectionViewCell {
         
         guard let posterPath = item.posterPath else { return }
         MovieService.shared.getMovieImage(imgURL: posterPath, imgPath: .posterPathString) { movieImageData in
-            self.movieImageView.image = UIImage(data:movieImageData ?? Data())
+            if let imageData = movieImageData {
+                self.movieImageView.image = UIImage(data: imageData)
+            } else {
+                self.movieImageView.image = UIImage(named: "defaultImage")
+            }
         } failure: { err in
             print(err)
         }
@@ -146,7 +150,11 @@ final class MovieCVCell: UICollectionViewCell {
         movieYearLabel.text = item.releaseDate
         guard let posterPath = item.posterPath else { return }
         MovieService.shared.getMovieImage(imgURL: posterPath, imgPath: .posterPathString) { movieImageData in
-            self.movieImageView.image = UIImage(data:movieImageData ?? Data())
+            if let imageData = movieImageData {
+                self.movieImageView.image = UIImage(data: imageData)
+            } else {
+                self.movieImageView.image = UIImage(named: "defaultImage")
+            }
         } failure: { err in
             print(err)
         }

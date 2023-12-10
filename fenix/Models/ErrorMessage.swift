@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - Error
 struct ErrorMessage: Codable {
     let error: String?
 }

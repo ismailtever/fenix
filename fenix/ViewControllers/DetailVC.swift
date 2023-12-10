@@ -12,7 +12,7 @@ final class DetailVC: UIViewController {
     
     //MARK: - Properties
     var selectedMovie: Movie?
-    var selectedDB: MovieItems?
+    var selectedCDMovie: MovieItems?
     
     //MARK: - UI Elements
     private let detailImageView = UIImageView()
@@ -235,7 +235,7 @@ final class DetailVC: UIViewController {
         
         if let id = selectedMovie?.id {
             movieID = id
-        } else if let id = selectedDB?.id {
+        } else if let id = selectedCDMovie?.id {
             movieID = Int(id)
         }
         if let id = movieID {
@@ -250,7 +250,11 @@ final class DetailVC: UIViewController {
             
             if let backdropPath = selectedMovie.backdropPath {
                 MovieService.shared.getMovieImage(imgURL: backdropPath, imgPath: .backdropPathString) { movieImageData in
-                    self.detailImageView.image = UIImage(data: movieImageData ?? Data())
+                    if let imageData = movieImageData {
+                        self.detailImageView.image = UIImage(data: imageData)
+                    } else {
+                        self.detailImageView.image = UIImage(named: "defaultImage")
+                    }
                 } failure: { err in
                     print(err)
                 }
@@ -259,9 +263,12 @@ final class DetailVC: UIViewController {
             ratingLabel.text = formattedString
             
             if let posterPath = selectedMovie.posterPath {
-                
-                MovieService.shared.getMovieImage(imgURL: posterPath,imgPath: .posterPathString) { movieImageData in
-                    self.posterImageView.image = UIImage(data: movieImageData ?? Data())
+                MovieService.shared.getMovieImage(imgURL: posterPath, imgPath: .posterPathString) { movieImageData in
+                    if let imageData = movieImageData {
+                        self.posterImageView.image = UIImage(data: imageData)
+                    } else {
+                        self.posterImageView.image = UIImage(named: "defaultImage")
+                    }
                 } failure: { err in
                     print(err)
                 }
@@ -271,28 +278,36 @@ final class DetailVC: UIViewController {
             descriptionLabel.text = selectedMovie.overview
             setInitialBookmarkState()
             
-        } else if selectedDB == selectedDB {
+        } else if selectedCDMovie == selectedCDMovie {
             
-            if let backdropPath = selectedDB?.backdropPath {
-                MovieService.shared.getMovieImage(imgURL: backdropPath,imgPath: .backdropPathString) { movieImageData in
-                    self.detailImageView.image = UIImage(data: movieImageData ?? Data())
+            if let backdropPath = selectedCDMovie?.backdropPath {
+                MovieService.shared.getMovieImage(imgURL: backdropPath, imgPath: .backdropPathString) { movieImageData in
+                    if let imageData = movieImageData {
+                        self.detailImageView.image = UIImage(data: imageData)
+                    } else {
+                        self.detailImageView.image = UIImage(named: "defaultImage")
+                    }
                 } failure: { err in
                     print(err)
                 }
             }
-            let formattedString = selectedDB?.voteAverage.formattedString()
+            let formattedString = selectedCDMovie?.voteAverage.formattedString()
             ratingLabel.text = formattedString
             
-            if let posterPath = selectedDB?.posterPath {
+            if let posterPath = selectedCDMovie?.posterPath {
                 MovieService.shared.getMovieImage(imgURL: posterPath, imgPath: .posterPathString) { movieImageData in
-                    self.posterImageView.image = UIImage(data: movieImageData ?? Data())
+                    if let imageData = movieImageData {
+                        self.posterImageView.image = UIImage(data: imageData)
+                    } else {
+                        self.posterImageView.image = UIImage(named: "defaultImage")
+                    }
                 } failure: { err in
                     print(err)
                 }
             }
-            posterLabel.text = selectedDB?.title
-            calenderLabel.text = selectedDB?.releaseDate
-            descriptionLabel.text = selectedDB?.overview
+            posterLabel.text = selectedCDMovie?.title
+            calenderLabel.text = selectedCDMovie?.releaseDate
+            descriptionLabel.text = selectedCDMovie?.overview
             setInitialBookmarkState()
         }
     }
@@ -305,15 +320,17 @@ final class DetailVC: UIViewController {
     
     @objc func saveButtonTapped() {
         if let data = selectedMovie {
-            let isSaved = CoreDataManager.shared.isMovieSaved(id: data.id ?? 0)
-            if isSaved {
-                CoreDataManager.shared.removeMovieItemFromCoreData(id: data.id ?? 0)
-            } else {
-                CoreDataManager.shared.saveMovieToCoreData(data: data)
+            if let movieId = data.id {
+                let isSaved = CoreDataManager.shared.isMovieSaved(id: movieId)
+                if isSaved {
+                    CoreDataManager.shared.removeMovieItemFromCoreData(id: movieId)
+                } else {
+                    CoreDataManager.shared.saveMovieToCoreData(data: data)
+                }
+                let bookmarkImage = isSaved ? UIImage(systemName: "bookmark") : UIImage(systemName: "bookmark.fill")
+                saveButton.setImage(bookmarkImage, for: .normal)
             }
-            let bookmarkImage = isSaved ? UIImage(systemName: "bookmark") : UIImage(systemName: "bookmark.fill")
-            saveButton.setImage(bookmarkImage, for: .normal)
-        } else if let data = selectedDB {
+        } else if let data = selectedCDMovie {
             let isSaved = CoreDataManager.shared.isMovieSaved(id: Int(data.id))
             if isSaved == true {
                 CoreDataManager.shared.removeMovieItemFromCoreData(id: Int(data.id))
